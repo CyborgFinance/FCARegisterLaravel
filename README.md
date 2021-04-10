@@ -29,7 +29,7 @@ composer require cyborgfinance/fcaregisterlaravel
 
 You can publish the config file with:
 ```bash
-php artisan vendor:publish --provider="Cyborgfinance\Fcaregisterlaravel\FcaregisterlaravelServiceProvider" --tag="fcaregisterlaravel-config"
+php artisan vendor:publish --provider="Cyborgfinance\Fcaregisterlaravel\FcaregisterlaravelServiceProvider" --tag="fcaapi-config"
 ```
 
 This is the contents of the published config file:
