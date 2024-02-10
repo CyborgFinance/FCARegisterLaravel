@@ -55,7 +55,7 @@ class Testing extends Controller {
 
       $fcaFrnNumber = 919921; //FCA Firm Reference Number (FRN)
 
-      $fcaApi = new Fcaapi()
+      $fcaApi = new Fcaapi();
       $result = $fcaApi->firmDetails($fcaFrnNumber)->json(); //Queries FCA Register
 
       dd($result); // Outputs Array
@@ -218,3 +218,8 @@ Please review [our security policy](../../security/policy) on how to report secu
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
+
+## TODO
+
+[] Fix Config Publish
