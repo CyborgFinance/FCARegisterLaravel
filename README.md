@@ -27,7 +27,17 @@ You can install the package via composer:
 composer require cyborgfinance/fcaregisterlaravel
 ```
 
+Add the following to your Environment File:
+
+```bash
+FCA_EMAIL="your@email.com"
+FCA_KEY="YOUR_FCA_API_KEY"
+```
+
+OR
+
 You can publish the config file with:
+
 ```bash
 php artisan vendor:publish --provider="Cyborgfinance\Fcaregisterlaravel\FcaregisterlaravelServiceProvider" --tag="fcaapi-config"
 ```
@@ -36,15 +46,17 @@ This is the contents of the published config file:
 
 ```php
 return [
-  'email' => 'your@email.com', // FCA API Email Address
-  'key' => 'SOMEAPIKEYPASSWORD', // FCA API KEY
+  'email' => env('FCA_EMAIL', 'your@email.com'), // FCA API Email Address
+  'key' => env('FCA_KEY', 'YOUR_FCA_API_KEY'), // FCA API KEY
   'api_version' => '0.1', // FCA API VERSION
   'api_url' => 'https://register.fca.org.uk/services/', // FCA API URL
   'api_timeout' => 5, // FCA API TIMEOUT in seconds
 ];
+
 ```
 
 ## Usage
+
 ```php
 namespace App\Http\Controllers;
 use Cyborgfinance\Fcaregisterlaravel\Fcaapi;
@@ -85,6 +97,7 @@ class Testing extends Controller {
 ```
 
 Both of these examples will output:
+
 ```bash
 array:4 [▼
   "Status" => "FSR-API-02-01-00"
@@ -125,77 +138,95 @@ array:4 [▼
 ## FCA Register Lookup Methods
 
 ### Company Records
+
 ```php
 //Get information about a specific firm using its Firm Reference Number
 $request = Fcaapi::firmDetails($fcaFrnNumber);
 ```
+
 ```php
 //Get information about the Individuals associated with a firm using its Firm Reference Number
 $request = Fcaapi::firmIndividuals($fcaFrnNumber);
 ```
+
 ```php
 //Get information about the other names used by the firms using its Firm Reference Number
 $request = Fcaapi::firmName($fcaFrnNumber);
 ```
+
 ```php
 //Get information about the requirements associated with a specific firm using its Firm Reference Number
 $request = Fcaapi::firmRequirements($fcaFrnNumber);
 ```
+
 ```php
 //Get information about the activities and permissions associated with a specific firm using its Firm Reference Number
 $request = Fcaapi::firmPermissions($fcaFrnNumber);
 ```
+
 ```php
 //Get information about a passport details by using its Firm Reference Number
 $request = Fcaapi::firmPassports($fcaFrnNumber);
 ```
+
 ```php
 //Get information about a passport permission by using its Firm Reference Number and Country
 $request = Fcaapi::firmPassportCountry($fcaFrnNumber, $country);
 ```
+
 ```php
 //Get information about a regulator on a firm using its Firm Reference Number
 $request = Fcaapi::firmRegulators($fcaFrnNumber);
 ```
+
 ```php
 //Get information about the Appointed Representatives associated with a firm using its Firm Reference Number
 $request = Fcaapi::firmAppointedRepresentatives($fcaFrnNumber);
 ```
+
 ```php
 //Get information about a specific firm using its Firm Reference Number
 $request = Fcaapi::firmAddress($fcaFrnNumber);
 ```
+
 ```php
 //Get information about a Waiver on a firm using it's Firm Reference Number
 $request = Fcaapi::firmWaivers($fcaFrnNumber);
 ```
+
 ```php
 //Get information about an Exclusion on a firm using it's Firm Reference Number
 $request = Fcaapi::firmExclusions($fcaFrnNumber);
 ```
+
 ```php
 //Get information about a DisciplinaryHistory on a firm using it's Firm Reference Number
 $request = Fcaapi::firmDisciplinaryHistory($fcaFrnNumber);
 ```
+
 ## Individual Records
+
 ```php
 //Get information about the Individuals associated with its Individual Reference Number
 $request = Fcaapi::individualDetails($fcaIrnNumber);
 ```
+
 ```php
 //Get information about all the firms, the Individual has a control function using their Individual Reference Number
 $request = Fcaapi::individualFunctions($fcaIrnNumber);
 ```
+
 ### Search Records
+
 ```php
 //Search the FS register using this API
 $request = Fcaapi::search($search);
 ```
+
 ```php
 //Search the FS register using this API
 $request = Fcaapi::searchRm();
 ```
-
 
 ## Changelog
 
@@ -218,7 +249,6 @@ Please review [our security policy](../../security/policy) on how to report secu
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
-
 
 ## TODO
 
