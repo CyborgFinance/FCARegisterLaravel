@@ -10,6 +10,7 @@ All notable changes to `FCARegisterLaravel` will be documented in this file.
 - Simplified TestCase setup and environment configuration
 - Removed live test configuration loading from TestCase
 - Streamlined test scripts in composer.json
+- Add Install Command `php artisan fcaapi:install`
 
 ## 1.0.3 - 2025-09-20
 

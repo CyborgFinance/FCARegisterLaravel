@@ -4,7 +4,7 @@ namespace Cyborgfinance\Fcaregisterlaravel;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-//use Cyborgfinance\Fcaregisterlaravel\Commands\FcaregisterlaravelCommand;
+use Spatie\LaravelPackageTools\Commands\InstallCommand;
 
 class FcaregisterlaravelServiceProvider extends PackageServiceProvider
 {
@@ -15,6 +15,13 @@ class FcaregisterlaravelServiceProvider extends PackageServiceProvider
          *
          * More info: https://github.com/spatie/laravel-package-tools
          */
-        $package->name('fcaapi')->hasConfigFile();
+        $package
+            ->name('fcaapi')
+            ->hasConfigFile()
+            ->hasInstallCommand(function(InstallCommand $command) {
+                $command
+                    ->publishConfigFile()
+                    ->askToStarRepoOnGitHub('cyborgfinance/fcaregisterlaravel');
+            });
     }
 }
