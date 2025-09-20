@@ -33,4 +33,19 @@ class FcaValidator
             throw new FcaValidationException("NO SEARCH PARAMETER PROVIDED");
         }
     }
+
+    public static function validateReqRef(string $reqRef): void
+    {
+        if (empty(trim($reqRef))) {
+            throw new FcaValidationException("NO REQUIREMENT REFERENCE PROVIDED");
+        }
+    }
+
+    public static function validateSearchType(string $type): void
+    {
+        $validTypes = ['firm', 'individual', 'fund'];
+        if (!in_array(strtolower($type), $validTypes)) {
+            throw new FcaValidationException("INVALID SEARCH TYPE. MUST BE ONE OF: " . implode(', ', $validTypes));
+        }
+    }
 }

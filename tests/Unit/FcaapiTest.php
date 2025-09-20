@@ -49,11 +49,53 @@ test('all firm methods require positive integer FRN number', function () {
         'firmAddress',
         'firmWaivers',
         'firmExclusions',
-        'firmDisciplinaryHistory'
+        'firmDisciplinaryHistory',
+        'firmControlledFunctions'
     ];
     
     foreach ($methods as $method) {
         expect(fn() => Fcaapi::$method(0))
             ->toThrow(\Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaValidationException::class, 'FCA FRN NUMBER MUST BE A POSITIVE INTEGER');
     }
+});
+
+test('requirementsInvestmentTypes method requires valid parameters', function () {
+    expect(fn() => Fcaapi::requirementsInvestmentTypes(0, 'REQ123'))
+        ->toThrow(\Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaValidationException::class, 'FCA FRN NUMBER MUST BE A POSITIVE INTEGER');
+    
+    expect(fn() => Fcaapi::requirementsInvestmentTypes(123456, ''))
+        ->toThrow(\Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaValidationException::class, 'NO REQUIREMENT REFERENCE PROVIDED');
+});
+
+test('individualDisciplinaryHistory method requires IRN number', function () {
+    expect(fn() => Fcaapi::individualDisciplinaryHistory(''))
+        ->toThrow(\Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaValidationException::class, 'NO FCA IRN NUMBER PROVIDED');
+});
+
+test('product methods require positive integer FRN number', function () {
+    $methods = [
+        'productDetails',
+        'productOtherNames',
+        'productSubfunds'
+    ];
+    
+    foreach ($methods as $method) {
+        expect(fn() => Fcaapi::$method(0))
+            ->toThrow(\Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaValidationException::class, 'FCA FRN NUMBER MUST BE A POSITIVE INTEGER');
+    }
+});
+
+test('search method validates search type parameter', function () {
+    expect(fn() => Fcaapi::search('test', 'invalid_type'))
+        ->toThrow(\Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaValidationException::class, 'INVALID SEARCH TYPE. MUST BE ONE OF: firm, individual, fund');
+    
+    // Valid types should not throw validation exceptions
+    expect(fn() => Fcaapi::search('test', 'firm'))
+        ->not->toThrow(\Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaValidationException::class);
+    
+    expect(fn() => Fcaapi::search('test', 'individual'))
+        ->not->toThrow(\Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaValidationException::class);
+    
+    expect(fn() => Fcaapi::search('test', 'fund'))
+        ->not->toThrow(\Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaValidationException::class);
 });

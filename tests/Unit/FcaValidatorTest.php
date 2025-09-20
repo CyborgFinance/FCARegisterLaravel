@@ -97,4 +97,51 @@ class FcaValidatorTest extends TestCase
         
         FcaValidator::validateSearch('');
     }
+
+    /** @test */
+    public function it_validates_req_ref_parameter()
+    {
+        // Should not throw exception for valid requirement reference
+        FcaValidator::validateReqRef('REQ123');
+        FcaValidator::validateReqRef('REF001');
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_rejects_empty_req_ref()
+    {
+        $this->expectException(FcaValidationException::class);
+        $this->expectExceptionMessage('NO REQUIREMENT REFERENCE PROVIDED');
+        
+        FcaValidator::validateReqRef('');
+    }
+
+    /** @test */
+    public function it_rejects_whitespace_only_req_ref()
+    {
+        $this->expectException(FcaValidationException::class);
+        $this->expectExceptionMessage('NO REQUIREMENT REFERENCE PROVIDED');
+        
+        FcaValidator::validateReqRef('   ');
+    }
+
+    /** @test */
+    public function it_validates_search_type_parameter()
+    {
+        // Should not throw exception for valid search types
+        FcaValidator::validateSearchType('firm');
+        FcaValidator::validateSearchType('individual');
+        FcaValidator::validateSearchType('fund');
+        FcaValidator::validateSearchType('FIRM'); // Case insensitive
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_rejects_invalid_search_type()
+    {
+        $this->expectException(FcaValidationException::class);
+        $this->expectExceptionMessage('INVALID SEARCH TYPE. MUST BE ONE OF: firm, individual, fund');
+        
+        FcaValidator::validateSearchType('invalid_type');
+    }
 }

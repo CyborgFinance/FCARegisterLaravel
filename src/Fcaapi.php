@@ -59,6 +59,21 @@ class Fcaapi
   }
 
   /**
+   * Get firm requirements investment types
+   * 
+   * @param int $fcaFrnNumber The FCA Firm Reference Number
+   * @param string $reqRef The requirement reference
+   * @return Response Laravel HTTP Response object
+   * @throws FcaValidationException When FRN number or requirement reference is invalid
+   */
+  public static function requirementsInvestmentTypes(int $fcaFrnNumber, string $reqRef): Response
+  {
+    self::getValidator()->validateFrnNumber($fcaFrnNumber);
+    self::getValidator()->validateReqRef($reqRef);
+    return self::getClient()->get('Firm/' . $fcaFrnNumber . '/Requirements/' . $reqRef . '/InvestmentTypes');
+  }
+
+  /**
    * Get firm permissions and regulated activities
    * 
    * @param int $fcaFrnNumber The FCA Firm Reference Number
@@ -168,6 +183,18 @@ class Fcaapi
   {
     return self::firmEndpoint($fcaFrnNumber, 'DisciplinaryHistory');
   }
+
+  /**
+   * Get firm controlled functions
+   * 
+   * @param int $fcaFrnNumber The FCA Firm Reference Number
+   * @return Response Laravel HTTP Response object
+   * @throws FcaValidationException When FRN number is invalid
+   */
+  public static function firmControlledFunctions(int $fcaFrnNumber): Response
+  {
+    return self::firmEndpoint($fcaFrnNumber, 'CF');
+  }
   //-----------------
   /**
    * Get individual details by IRN (Individual Reference Number)
@@ -195,28 +222,86 @@ class Fcaapi
     return self::getClient()->get('Individuals/' . $fcaIrnNumber . '/CF');
   }
 
+  /**
+   * Get individual disciplinary history
+   * 
+   * @param string $fcaIrnNumber The FCA Individual Reference Number
+   * @return Response Laravel HTTP Response object
+   * @throws FcaValidationException When IRN number is invalid
+   */
+  public static function individualDisciplinaryHistory(string $fcaIrnNumber): Response
+  {
+    self::getValidator()->validateIrnNumber($fcaIrnNumber);
+    return self::getClient()->get('Individuals/' . $fcaIrnNumber . '/DisciplinaryHistory');
+  }
+
   //-----------
   /**
    * Search FCA register for firms and individuals
    * 
    * @param string $search The search term
+   * @param string $type The search type (firm, individual, or fund)
+   * @param int $perPage Number of results per page
    * @return Response Laravel HTTP Response object
    * @throws FcaValidationException When search parameter is not provided
    */
-  public static function search(string $search): Response
+  public static function search(string $search, string $type = 'firm', int $perPage = 10): Response
   {
     self::getValidator()->validateSearch($search);
-    return self::getClient()->get('Search?q=' . $search . '&type=firm&per_page=10');
+    self::getValidator()->validateSearchType($type);
+    return self::getClient()->get('Search?q=' . $search . '&type=' . $type . '&per_page=' . $perPage);
   }
 
   /**
-   * Search for firms with RM (Restricted Mortgage) permissions
+   * Search for firms with specific permissions
    * 
+   * @param string $query The search query
    * @return Response Laravel HTTP Response object
+   * @throws FcaValidationException When query parameter is not provided
    */
-  public static function searchRm(): Response
+  public static function searchRm(string $query = 'RM'): Response
   {
-    return self::getClient()->get('CommonSearch?q=RM');
+    self::getValidator()->validateSearch($query);
+    return self::getClient()->get('CommonSearch?q=' . $query);
+  }
+
+  /**
+   * Get product details by firm reference number
+   * 
+   * @param int $fcaFrnNumber The FCA Firm Reference Number
+   * @return Response Laravel HTTP Response object
+   * @throws FcaValidationException When FRN number is invalid
+   */
+  public static function productDetails(int $fcaFrnNumber): Response
+  {
+    self::getValidator()->validateFrnNumber($fcaFrnNumber);
+    return self::getClient()->get('Products/' . $fcaFrnNumber);
+  }
+
+  /**
+   * Get product other names by firm reference number
+   * 
+   * @param int $fcaFrnNumber The FCA Firm Reference Number
+   * @return Response Laravel HTTP Response object
+   * @throws FcaValidationException When FRN number is invalid
+   */
+  public static function productOtherNames(int $fcaFrnNumber): Response
+  {
+    self::getValidator()->validateFrnNumber($fcaFrnNumber);
+    return self::getClient()->get('Products/' . $fcaFrnNumber . '/OtherNames');
+  }
+
+  /**
+   * Get product subfunds by firm reference number
+   * 
+   * @param int $fcaFrnNumber The FCA Firm Reference Number
+   * @return Response Laravel HTTP Response object
+   * @throws FcaValidationException When FRN number is invalid
+   */
+  public static function productSubfunds(int $fcaFrnNumber): Response
+  {
+    self::getValidator()->validateFrnNumber($fcaFrnNumber);
+    return self::getClient()->get('Products/' . $fcaFrnNumber . '/Subfunds');
   }
 
   private static function firmEndpoint(int $fcaFrnNumber, string $endpoint): Response
