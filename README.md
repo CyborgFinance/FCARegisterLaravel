@@ -279,4 +279,10 @@ The package includes a comprehensive live test suite to verify real API integrat
 
 ## TODO
 
-[] Fix Config Publish
+## Name -  Service provider uses 'fcaapi' but package name is 'fcaregisterlaravel'
+1. Update package name in service provider to match composer.json
+2. Rename config file from fcaapi.php to fcaregisterlaravel.php
+3. Update all config references throughout codebase
+4. Add tests for package discovery and installation
+5. Test config file publishing
+6.  Verify all Laravel package tool features work correctly
