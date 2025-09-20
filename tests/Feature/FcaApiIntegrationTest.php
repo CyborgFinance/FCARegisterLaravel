@@ -22,7 +22,7 @@ test('Fcaapi handles API errors gracefully', function (): void {
         '*' => Http::response(['Status' => 'FSR-API-01-01-11'], 401),
     ]);
 
-    expect(fn (): Illuminate\Http\Client\Response => Fcaapi::firmDetails('123456'))
+    expect(fn (): Illuminate\Http\Client\Response => Fcaapi::firmDetails(123456))
         ->toThrow(Exception::class);
 });
 
@@ -36,7 +36,7 @@ test('Fcaapi uses correct API endpoint configuration', function (): void {
         'fcaapi.api_version' => '0.2',
     ]);
 
-    $response = Fcaapi::firmDetails('123456');
+    $response = Fcaapi::firmDetails(123456);
 
     expect($response->status())->toBe(200);
 });
