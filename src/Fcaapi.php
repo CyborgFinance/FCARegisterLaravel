@@ -301,36 +301,11 @@ class Fcaapi
   private static function handleApiResponse(Response $response): void
   {
     if (isset($response['Status'])) {
-      self::handleStatusCodes($response['Status']);
+      FcaErrorHandler::handleStatusCode($response['Status']);
     }
 
     if ($response->failed()) {
       $response->throw();
     }
   }
-
-  private static function handleStatusCodes(string $code): void
-  {
-    if (!$code) {
-      throw new FcaApiException("NO FCA STATUS CODE");
-    }
-
-    switch ($code) {
-      //Success Codes
-      case 'FSR-API-02-05-00':
-        break;
-      //Error Codes
-      case 'FSR-API-02-05-11':
-        throw new FcaApiException("Bad Request : Invalid Input");
-      case 'FSR-API-01-01-11':
-        throw new FcaApiException('Unauthorised: Please include a valid API key and Email address');
-      //--firmIndividuals
-      case 'FSR-API-02-05-21':
-        throw new FcaApiException('ERROR : Individual Not Found');
-      //--
-    }
-  }
-
-
-
 }
