@@ -23,23 +23,24 @@ The FS Register API currently sets a maximum limit of 10 requests per 10 seconds
 
 You can install the package via composer:
 
+### 1 - Install the Package
+
 ```bash
 composer require cyborgfinance/fcaregisterlaravel
 ```
 
 Add the following to your Environment File:
 
+### 2 - Add FCA API Credentials to your .env file
+
 ```bash
 FCA_EMAIL="your@email.com"
 FCA_KEY="YOUR_FCA_API_KEY"
 ```
 
-OR
-
-You can publish the config file with:
-
+### 3 - (optional) Publish the config file
 ```bash
-php artisan vendor:publish --provider="Cyborgfinance\Fcaregisterlaravel\FcaregisterlaravelServiceProvider" --tag="fcaapi-config"
+php artisan fcaapi:install
 ```
 
 This is the contents of the published config file:
