@@ -34,7 +34,7 @@ final class FcaApiClient
             'X-Auth-Key' => $this->getConfig('fcaapi.key'),
             'Content-Type' => 'application/json',
         ])
-            ->timeout($this->getConfig('fcaapi.api_timeout', self::DEFAULT_TIMEOUT))
+            ->timeout(is_int($this->getConfig('fcaapi.api_timeout', self::DEFAULT_TIMEOUT)) ? $this->getConfig('fcaapi.api_timeout', self::DEFAULT_TIMEOUT) : self::DEFAULT_TIMEOUT)
             ->retry(self::DEFAULT_RETRY_ATTEMPTS, self::DEFAULT_RETRY_DELAY)
             ->get($apiUrl);
 
@@ -51,7 +51,7 @@ final class FcaApiClient
         return $baseUrl.'V'.$version.'/'.$uri;
     }
 
-    private function getConfig(string $key, $default = null)
+    private function getConfig(string $key, mixed $default = null): mixed
     {
         try {
             if (function_exists('config')) {
@@ -67,7 +67,10 @@ final class FcaApiClient
     private function handleApiResponse(Response $response): void
     {
         if (isset($response['Status'])) {
-            FcaErrorHandler::handleStatusCode($response['Status']);
+            $status = $response['Status'];
+            if (is_string($status) || is_numeric($status)) {
+                FcaErrorHandler::handleStatusCode((string) $status);
+            }
         }
 
         if ($response->failed()) {

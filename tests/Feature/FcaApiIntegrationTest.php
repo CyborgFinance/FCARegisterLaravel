@@ -11,7 +11,7 @@ test('Fcaapi integrates with Laravel HTTP client', function (): void {
         '*' => Http::response(['Status' => 'FSR-API-02-05-00', 'Data' => []], 200),
     ]);
 
-    $response = Fcaapi::firmDetails('123456');
+    $response = Fcaapi::firmDetails(123456);
 
     expect($response->status())->toBe(200);
     expect($response->json())->toHaveKey('Data');

@@ -101,7 +101,7 @@ final class FcaApiLiveTest extends TestCase
     /** @test */
     public function it_handles_invalid_frn_numbers_gracefully(): void
     {
-        $invalidFrn = '999999999'; // Very unlikely to exist
+        $invalidFrn = 999999999; // Very unlikely to exist
 
         // Should handle invalid FRN appropriately (either throw exception or return error)
         try {
