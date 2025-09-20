@@ -7,64 +7,60 @@ use Illuminate\Support\Facades\Http;
 class Fcaapi
 {
 
-  //- NOTES
-  //-- Max 5 requests per x secconds
-  //-- Support Email RegisterAPISupport@fca.org.uk
-
   //Firm Details
   public static function firmDetails($fcaFrnNumber = NULL){
-    if(!$fcaFrnNumber){abort(403, "NO FCA FRN NUMBER PROVIDED");}
+    self::validateFcaFrnNumber($fcaFrnNumber);
     return self::fcaGet('Firm/'.$fcaFrnNumber);
   }
   public static function firmIndividuals($fcaFrnNumber = NULL){
-    if(!$fcaFrnNumber){abort(403, "NO FCA FRN NUMBER PROVIDED");}
+    self::validateFcaFrnNumber($fcaFrnNumber);
     return self::fcaGet('Firm/'.$fcaFrnNumber.'/Individuals');
   }
   public static function firmName($fcaFrnNumber = NULL){
-    if(!$fcaFrnNumber){abort(403, "NO FCA FRN NUMBER PROVIDED");}
+    self::validateFcaFrnNumber($fcaFrnNumber);
     return self::fcaGet('Firm/'.$fcaFrnNumber.'/Names');
   }
   public static function firmRequirements($fcaFrnNumber = NULL){
-    if(!$fcaFrnNumber){abort(403, "NO FCA FRN NUMBER PROVIDED");}
+    self::validateFcaFrnNumber($fcaFrnNumber);
     return self::fcaGet('Firm/'.$fcaFrnNumber.'/Requirements');
   }
   public static function firmPermissions($fcaFrnNumber = NULL){
-    if(!$fcaFrnNumber){abort(403, "NO FCA FRN NUMBER PROVIDED");}
+    self::validateFcaFrnNumber($fcaFrnNumber);
     return self::fcaGet('Firm/'.$fcaFrnNumber.'/Permissions');
   }
   public static function firmPassports($fcaFrnNumber = NULL){
-    if(!$fcaFrnNumber){abort(403, "NO FCA FRN NUMBER PROVIDED");}
+    self::validateFcaFrnNumber($fcaFrnNumber);
     return self::fcaGet('Firm/'.$fcaFrnNumber.'/Passports');
   }
   public static function firmPassportCountry($fcaFrnNumber = NULL, $country = NULL){
-    if(!$fcaFrnNumber){abort(403, "NO FCA FRN NUMBER PROVIDED");}
+    self::validateFcaFrnNumber($fcaFrnNumber);
     if(!$country){abort(403, "NO FCA COUNTRY PROVIDED");}
     return self::fcaGet('Firm/'.$fcaFrnNumber.'/Passports/'.$country.'/Permission');
   }
   public static function firmRegulators($fcaFrnNumber = NULL){
-    if(!$fcaFrnNumber){abort(403, "NO FCA FRN NUMBER PROVIDED");}
+    self::validateFcaFrnNumber($fcaFrnNumber);
     return self::fcaGet('Firm/'.$fcaFrnNumber.'/Regulators');
   }
   public static function firmAppointedRepresentatives($fcaFrnNumber = NULL){
-    if(!$fcaFrnNumber){abort(403, "NO FCA FRN NUMBER PROVIDED");}
+    self::validateFcaFrnNumber($fcaFrnNumber);
     return self::fcaGet('Firm/'.$fcaFrnNumber.'/AR');
   }
   public static function firmAddress($fcaFrnNumber = NULL){
-    if(!$fcaFrnNumber){abort(403, "NO FCA FRN NUMBER PROVIDED");}
+    self::validateFcaFrnNumber($fcaFrnNumber);
     return self::fcaGet('Firm/'.$fcaFrnNumber.'/Address');
   }
   public static function firmWaivers($fcaFrnNumber = NULL){
-    if(!$fcaFrnNumber){abort(403, "NO FCA FRN NUMBER PROVIDED");}
+    self::validateFcaFrnNumber($fcaFrnNumber);
     return self::fcaGet('Firm/'.$fcaFrnNumber.'/Waivers');
   }
   //Exclusions
   public static function firmExclusions($fcaFrnNumber = NULL){
-    if(!$fcaFrnNumber){abort(403, "NO FCA FRN NUMBER PROVIDED");}
+    self::validateFcaFrnNumber($fcaFrnNumber);
     return self::fcaGet('Firm/'.$fcaFrnNumber.'/Exclusions');
   }
   //DisciplinaryHistory
   public static function firmDisciplinaryHistory($fcaFrnNumber = NULL){
-    if(!$fcaFrnNumber){abort(403, "NO FCA FRN NUMBER PROVIDED");}
+    self::validateFcaFrnNumber($fcaFrnNumber);
     return self::fcaGet('Firm/'.$fcaFrnNumber.'/DisciplinaryHistory');
   }
   //-----------------
@@ -117,6 +113,10 @@ class Fcaapi
     //$response->collect() : Illuminate\Support\Collection;
 
     return $response;
+  }
+
+  private static function validateFcaFrnNumber($fcaFrnNumber){
+    if(!$fcaFrnNumber){abort(403, "NO FCA FRN NUMBER PROVIDED");}
   }
 
   private static function statusCodes($code){
