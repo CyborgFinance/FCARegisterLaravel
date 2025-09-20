@@ -3,6 +3,7 @@
     "description": "Financial Conduct Authority (FCA) API Client Library for Laravel.",
     "keywords": [
         "CyborgFinance",
+        "Cyborg Finance",
         "fcaregisterlaravel",
         "FCA",
         "FCA REGISTER",
@@ -24,20 +25,15 @@
         }
     ],
     "require": {
-        "php": "^8.2",
-        "guzzlehttp/guzzle": "^7.8",
         "spatie/laravel-package-tools": "^1.16"
     },
     "require-dev": {
-        "nunomaduro/collision": "^7.9",
-        "orchestra/testbench": "^8.22",
         "pestphp/pest": "^2.34",
         "pestphp/pest-plugin-laravel": "^2.3"
     },
     "autoload": {
         "psr-4": {
-            "Cyborgfinance\\Fcaregisterlaravel\\": "src",
-            "Cyborgfinance\\Fcaregisterlaravel\\Database\\Factories\\": "database/factories"
+            "Cyborgfinance\\Fcaregisterlaravel\\": "src"
         }
     },
     "autoload-dev": {
@@ -55,7 +51,6 @@
         "test": "./vendor/bin/pest",
         "test-coverage": "./vendor/bin/pest --coverage",
         "test-live": "RUN_LIVE_TESTS=true ./vendor/bin/pest --group=live",
-        "test-unit": "./vendor/bin/pest --exclude-group=live",
         "test-quick": "./vendor/bin/pest --exclude-group=live,integration"
     },
     "extra": {

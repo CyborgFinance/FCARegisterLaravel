@@ -2,6 +2,15 @@
 
 All notable changes to `FCARegisterLaravel` will be documented in this file.
 
+## 1.0.4 - 2025-09-20
+
+### Changed
+- Simplified composer.json dependencies and configuration
+- Removed database factories autoload from composer.json
+- Simplified TestCase setup and environment configuration
+- Removed live test configuration loading from TestCase
+- Streamlined test scripts in composer.json
+
 ## 1.0.3 - 2025-09-20
 
 ### Added
