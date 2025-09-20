@@ -39,6 +39,7 @@ class FcaErrorHandler
             case 'FSR-API-03-02-00': // Individual CF success
             case 'FSR-API-03-03-00': // Individual disciplinary history success
             case 'FSR-API-04-01-00': // Search success
+            case 'FSR-API-06-04-00': // Ok. Regulated market information found
                 break;
                 
             // Login Errors

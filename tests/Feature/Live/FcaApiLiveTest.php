@@ -25,13 +25,16 @@ class FcaApiLiveTest extends TestCase
         if (!$this->hasValidApiCredentials()) {
             $this->markTestSkipped('Live FCA API credentials not configured. Set FCA_EMAIL and FCA_KEY environment variables.');
         }
+        
+        // Rate limiting: sleep to respect 10 requests per 10 seconds limit
+        sleep(1);
     }
 
     /** @test */
     public function it_can_retrieve_firm_details_using_real_api()
     {
         // Use a known FCA firm number (e.g., a major bank)
-        $testFrn = '1920926'; // Example: HSBC UK Bank plc
+        $testFrn = '919921'; // Example: Cyborg Finance LTD
         
         $response = Fcaapi::firmDetails($testFrn);
         
@@ -48,7 +51,7 @@ class FcaApiLiveTest extends TestCase
     /** @test */
     public function it_can_search_for_firms_using_real_api()
     {
-        $searchTerm = 'HSBC';
+        $searchTerm = 'Cyborg';
         
         $response = Fcaapi::search($searchTerm);
         
@@ -64,7 +67,7 @@ class FcaApiLiveTest extends TestCase
     /** @test */
     public function it_can_retrieve_firm_names_using_real_api()
     {
-        $testFrn = '1920926'; // HSBC UK Bank plc
+        $testFrn = '919921'; // Cyborg Finance LTD
         
         $response = Fcaapi::firmName($testFrn);
         
@@ -80,7 +83,7 @@ class FcaApiLiveTest extends TestCase
     /** @test */
     public function it_can_retrieve_firm_permissions_using_real_api()
     {
-        $testFrn = '1920926'; // HSBC UK Bank plc
+        $testFrn = '919921'; // Cyborg Finance LTD
         
         $response = Fcaapi::firmPermissions($testFrn);
         
@@ -112,7 +115,7 @@ class FcaApiLiveTest extends TestCase
     /** @test */
     public function it_can_retrieve_firm_address_using_real_api()
     {
-        $testFrn = '1920926'; // HSBC UK Bank plc
+        $testFrn = '919921'; // Cyborg Finance LTD
         
         $response = Fcaapi::firmAddress($testFrn);
         
@@ -128,7 +131,7 @@ class FcaApiLiveTest extends TestCase
     /** @test */
     public function it_can_retrieve_firm_individuals_using_real_api()
     {
-        $testFrn = '1920926'; // HSBC UK Bank plc
+        $testFrn = '919921'; // Cyborg Finance LTD
         
         // This endpoint may not be available or may require different parameters
         try {
@@ -161,14 +164,16 @@ class FcaApiLiveTest extends TestCase
     /** @test */
     public function it_respects_rate_limits_with_multiple_requests()
     {
-        $testFrn = '1920926';
+        $testFrn = '919921';
         
         // Make multiple requests to test rate limiting
         $responses = [];
         for ($i = 0; $i < 3; $i++) {
             $responses[] = Fcaapi::firmDetails($testFrn);
-            // Small delay between requests to be respectful
-            usleep(100000); // 100ms
+            // Delay between requests to respect rate limits (1 second = 10 requests per 10 seconds)
+            if ($i < 2) { // No need to sleep after the last request
+                sleep(1);
+            }
         }
         
         // All requests should succeed

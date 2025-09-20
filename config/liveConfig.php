@@ -17,9 +17,8 @@ return [
 
     // Test FRN numbers (known valid FCA firms)
     'test_frns' => [
-        'hsbc' => '1920926',        // HSBC UK Bank plc
+        'cyborg' => '919921',        // Cyborg Finance Limited
         'barclays' => '106054',     // Barclays Bank UK PLC
-        'lloyds' => '119923',       // Lloyds Bank plc
         'natwest' => '121878',      // National Westminster Bank plc
     ],
 
