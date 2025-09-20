@@ -14,10 +14,10 @@ test('Fcaapi class can be instantiated', function () {
 
 test('firmDetails method requires positive integer FRN number', function () {
     expect(fn() => Fcaapi::firmDetails(0))
-        ->toThrow(\Exception::class, 'FCA FRN NUMBER MUST BE A POSITIVE INTEGER');
+        ->toThrow(\Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaValidationException::class, 'FCA FRN NUMBER MUST BE A POSITIVE INTEGER');
     
     expect(fn() => Fcaapi::firmDetails(-1))
-        ->toThrow(\Exception::class, 'FCA FRN NUMBER MUST BE A POSITIVE INTEGER');
+        ->toThrow(\Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaValidationException::class, 'FCA FRN NUMBER MUST BE A POSITIVE INTEGER');
 });
 
 test('firmDetails method accepts valid FRN number', function () {
@@ -29,12 +29,12 @@ test('firmDetails method accepts valid FRN number', function () {
 
 test('search method requires search parameter', function () {
     expect(fn() => Fcaapi::search(''))
-        ->toThrow(\Exception::class, 'NO SEARCH PARAMETER PROVIDED');
+        ->toThrow(\Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaValidationException::class, 'NO SEARCH PARAMETER PROVIDED');
 });
 
 test('individualDetails method requires IRN number', function () {
     expect(fn() => Fcaapi::individualDetails(''))
-        ->toThrow(\Exception::class, 'NO FCA IRN NUMBER PROVIDED');
+        ->toThrow(\Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaValidationException::class, 'NO FCA IRN NUMBER PROVIDED');
 });
 
 test('all firm methods require positive integer FRN number', function () {
@@ -54,6 +54,6 @@ test('all firm methods require positive integer FRN number', function () {
     
     foreach ($methods as $method) {
         expect(fn() => Fcaapi::$method(0))
-            ->toThrow(\Exception::class, 'FCA FRN NUMBER MUST BE A POSITIVE INTEGER');
+            ->toThrow(\Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaValidationException::class, 'FCA FRN NUMBER MUST BE A POSITIVE INTEGER');
     }
 });
