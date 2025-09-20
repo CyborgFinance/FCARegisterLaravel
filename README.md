@@ -19,11 +19,15 @@ It is a RESTful API based on HTTPS requests and JSON responses, requiring an API
 
 The FS Register API currently sets a maximum limit of 10 requests per 10 seconds, which is periodically subject to change.
 
+The FCA offers support for use of the API at `RegisterAPISupport@fca.org.uk` they will not provide support for use of this 3rd party package.
+
 ## Installation
 
-You can install the package via composer:
+This a a Laravel wrapper for the FCA API, you will need a Laravel application to use this package.
 
 ### 1 - Install the Package
+
+You can install the package via composer:
 
 ```bash
 composer require cyborgfinance/fcaregisterlaravel
