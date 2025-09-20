@@ -206,7 +206,7 @@ class Fcaapi
   public static function search(string $search): Response
   {
     self::getValidator()->validateSearch($search);
-    return self::getClient()->get('Search?q=' . $search . '&per_page=10');
+    return self::getClient()->get('Search?q=' . $search . '&type=firm&per_page=10');
   }
 
   /**
