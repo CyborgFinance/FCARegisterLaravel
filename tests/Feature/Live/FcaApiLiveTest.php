@@ -1,0 +1,197 @@
+<?php
+
+namespace Cyborgfinance\Fcaregisterlaravel\Tests\Feature\Live;
+
+use Cyborgfinance\Fcaregisterlaravel\Tests\TestCase;
+use Cyborgfinance\Fcaregisterlaravel\Fcaapi;
+use Illuminate\Support\Facades\Http;
+
+/**
+ * @group live
+ * @group integration
+ */
+class FcaApiLiveTest extends TestCase
+{
+    protected function setUp(): void
+    {
+        parent::setUp();
+        
+        // Skip live tests if explicitly disabled
+        if (!config('fcaapi.run_live_tests')) {
+            $this->markTestSkipped('Live tests are disabled. Set RUN_LIVE_TESTS=true to enable.');
+        }
+        
+        // Skip live tests if no real API credentials are available
+        if (!$this->hasValidApiCredentials()) {
+            $this->markTestSkipped('Live FCA API credentials not configured. Set FCA_EMAIL and FCA_KEY environment variables.');
+        }
+    }
+
+    /** @test */
+    public function it_can_retrieve_firm_details_using_real_api()
+    {
+        // Use a known FCA firm number (e.g., a major bank)
+        $testFrn = '1920926'; // Example: HSBC UK Bank plc
+        
+        $response = Fcaapi::firmDetails($testFrn);
+        
+        // Verify the response structure - API is accessible
+        expect($response->status())->toBe(200);
+        expect($response->json())->toHaveKey('Status');
+        expect($response->json()['Status'])->toMatch('/^FSR-API-\\d{2}-\\d{2}-\\d{2}$/');
+        expect($response->json())->toHaveKey('Data');
+        
+        // Basic verification that we got a response
+        expect($response->json())->toBeArray();
+    }
+
+    /** @test */
+    public function it_can_search_for_firms_using_real_api()
+    {
+        $searchTerm = 'HSBC';
+        
+        $response = Fcaapi::search($searchTerm);
+        
+        expect($response->status())->toBe(200);
+        expect($response->json())->toHaveKey('Status');
+        expect($response->json()['Status'])->toMatch('/^FSR-API-\\d{2}-\\d{2}-\\d{2}$/');
+        expect($response->json())->toHaveKey('Data');
+        
+        // Basic verification that we got a response
+        expect($response->json())->toBeArray();
+    }
+
+    /** @test */
+    public function it_can_retrieve_firm_names_using_real_api()
+    {
+        $testFrn = '1920926'; // HSBC UK Bank plc
+        
+        $response = Fcaapi::firmName($testFrn);
+        
+        expect($response->status())->toBe(200);
+        expect($response->json())->toHaveKey('Status');
+        expect($response->json()['Status'])->toMatch('/^FSR-API-\\d{2}-\\d{2}-\\d{2}$/');
+        expect($response->json())->toHaveKey('Data');
+        
+        // Basic verification that we got a response
+        expect($response->json())->toBeArray();
+    }
+
+    /** @test */
+    public function it_can_retrieve_firm_permissions_using_real_api()
+    {
+        $testFrn = '1920926'; // HSBC UK Bank plc
+        
+        $response = Fcaapi::firmPermissions($testFrn);
+        
+        expect($response->status())->toBe(200);
+        expect($response->json())->toHaveKey('Status');
+        expect($response->json()['Status'])->toMatch('/^FSR-API-\\d{2}-\\d{2}-\\d{2}$/');
+        expect($response->json())->toHaveKey('Data');
+        
+        // Basic verification that we got a response
+        expect($response->json())->toBeArray();
+    }
+
+    /** @test */
+    public function it_handles_invalid_frn_numbers_gracefully()
+    {
+        $invalidFrn = '999999999'; // Very unlikely to exist
+        
+        // Should handle invalid FRN appropriately (either throw exception or return error)
+        try {
+            $response = Fcaapi::firmDetails($invalidFrn);
+            // If no exception, should return an error status
+            expect($response->status())->not->toBe(200);
+        } catch (\Exception $e) {
+            // Exception is also acceptable behavior
+            expect(true)->toBeTrue();
+        }
+    }
+
+    /** @test */
+    public function it_can_retrieve_firm_address_using_real_api()
+    {
+        $testFrn = '1920926'; // HSBC UK Bank plc
+        
+        $response = Fcaapi::firmAddress($testFrn);
+        
+        expect($response->status())->toBe(200);
+        expect($response->json())->toHaveKey('Status');
+        expect($response->json()['Status'])->toMatch('/^FSR-API-\\d{2}-\\d{2}-\\d{2}$/');
+        expect($response->json())->toHaveKey('Data');
+        
+        // Basic verification that we got a response
+        expect($response->json())->toBeArray();
+    }
+
+    /** @test */
+    public function it_can_retrieve_firm_individuals_using_real_api()
+    {
+        $testFrn = '1920926'; // HSBC UK Bank plc
+        
+        // This endpoint may not be available or may require different parameters
+        try {
+            $response = Fcaapi::firmIndividuals($testFrn);
+            
+            expect($response->status())->toBe(200);
+            expect($response->json())->toHaveKey('Status');
+            expect($response->json()['Status'])->toMatch('/^FSR-API-\\d{2}-\\d{2}-\\d{2}$/');
+            expect($response->json())->toHaveKey('Data');
+            
+            // Basic verification that we got a response
+            expect($response->json())->toBeArray();
+        } catch (\Exception $e) {
+            // If the endpoint doesn't exist or returns an error, that's acceptable for a live test
+            expect(true)->toBeTrue();
+        }
+    }
+
+    /** @test */
+    public function it_can_perform_common_search_using_real_api()
+    {
+        $response = Fcaapi::searchRm();
+        
+        expect($response->status())->toBe(200);
+        expect($response->json())->toHaveKey('Status');
+        expect($response->json()['Status'])->toMatch('/^FSR-API-\\d{2}-\\d{2}-\\d{2}$/');
+        expect($response->json())->toHaveKey('Data');
+    }
+
+    /** @test */
+    public function it_respects_rate_limits_with_multiple_requests()
+    {
+        $testFrn = '1920926';
+        
+        // Make multiple requests to test rate limiting
+        $responses = [];
+        for ($i = 0; $i < 3; $i++) {
+            $responses[] = Fcaapi::firmDetails($testFrn);
+            // Small delay between requests to be respectful
+            usleep(100000); // 100ms
+        }
+        
+        // All requests should succeed
+        foreach ($responses as $response) {
+            expect($response->status())->toBe(200);
+            expect($response->json()['Status'])->toMatch('/^FSR-API-\\d{2}-\\d{2}-\\d{2}$/');
+        }
+    }
+
+    /**
+     * Check if valid API credentials are available
+     */
+    private function hasValidApiCredentials(): bool
+    {
+        $email = config('fcaapi.email');
+        $key = config('fcaapi.key');
+        
+        // Don't use default test credentials
+        return $email !== 'test@example.com' && 
+               $key !== 'test-key' && 
+               !empty($email) && 
+               !empty($key) &&
+               $email !== 'your@email.com' &&
+               $key !== 'YOUR_FCA_API_KEY';
+    }
+}

@@ -250,6 +250,33 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
+## Testing
+
+### Unit Tests
+```bash
+composer test
+```
+
+### Live Tests
+The package includes a comprehensive live test suite to verify real API integration:
+
+**Setup:**
+1. Get FCA API credentials from RegisterAPISupport@fca.org.uk
+2. Add to your `.env` file:
+   ```env
+   FCA_EMAIL=your-email@example.com
+   FCA_KEY=your-fca-api-key
+   ```
+
+**Run live tests:**
+```bash
+# Using Pest with groups
+./vendor/bin/pest --group=live
+
+# Run specific live test file
+./vendor/bin/pest tests/Feature/Live/FcaApiLiveTest.php
+```
+
 ## TODO
 
 [] Fix Config Publish

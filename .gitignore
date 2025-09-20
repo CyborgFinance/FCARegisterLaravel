@@ -2,9 +2,12 @@
 .php_cs
 .php_cs.cache
 .phpunit.result.cache
+.phpunit.cache
+.pest.cache
 build
 composer.lock
 coverage
 docs
 vendor
 node_modules
+.env
