@@ -24,4 +24,15 @@ class FcaregisterlaravelServiceProvider extends PackageServiceProvider
                     ->askToStarRepoOnGitHub('cyborgfinance/fcaregisterlaravel');
             });
     }
+
+    public function register()
+    {
+        parent::register();
+
+        // Ensure config is merged even in test environment
+        $this->mergeConfigFrom(
+            __DIR__ . '/../config/fcaapi.php', 
+            'fcaapi'
+        );
+    }
 }

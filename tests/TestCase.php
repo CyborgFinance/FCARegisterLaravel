@@ -24,24 +24,37 @@ abstract class TestCase extends BaseTestCase
 
     
 
-    protected function getEnvironmentSetUp($app)
+    protected function setUp(): void
     {
-        // Database config
-        $app['config']->set('database.default', 'sqlite');
-        $app['config']->set('database.connections.sqlite', [
-            'driver' => 'sqlite',
-            'database' => ':memory:',
-            'prefix' => '',
-        ]);
+        parent::setUp();
         
-        // Setup FCA API config for tests
-        $app['config']->set('fcaapi.email', env('FCA_EMAIL', 'test@example.com'));
-        $app['config']->set('fcaapi.key', env('FCA_KEY', 'test-key'));
-        $app['config']->set('fcaapi.api_url', 'https://register.fca.org.uk/services/');
-        $app['config']->set('fcaapi.api_version', '0.1');
-        $app['config']->set('fcaapi.api_timeout', 5);
+        // Load the package config file directly
+        $configPath = __DIR__ . '/../config/fcaapi.php';
         
-        // Set live tests toggle (default to false)
-        $app['config']->set('fcaapi.run_live_tests', env('RUN_LIVE_TESTS', false));
+        if (file_exists($configPath)) {
+            $packageConfig = require $configPath;
+            config()->set('fcaapi', $packageConfig);
+        } else {
+            // Fallback config if file doesn't exist
+            config()->set('fcaapi', [
+                'email' => 'test@example.com',
+                'key' => 'test-key',
+                'api_url' => 'https://register.fca.org.uk/services/',
+                'api_version' => '0.1',
+                'api_timeout' => 5,
+                'run_live_tests' => false,
+            ]);
+        }
+        
+        // Override with environment variables
+        config()->set('fcaapi.email', env('FCA_EMAIL', config('fcaapi.email')));
+        config()->set('fcaapi.key', env('FCA_KEY', config('fcaapi.key')));
+        
+        // Set live tests toggle with proper boolean conversion
+        $runLiveTests = env('RUN_LIVE_TESTS', config('fcaapi.run_live_tests'));
+        if (is_string($runLiveTests)) {
+            $runLiveTests = strtolower($runLiveTests) === 'true' || $runLiveTests === '1';
+        }
+        config()->set('fcaapi.run_live_tests', (bool) $runLiveTests);
     }
 }
