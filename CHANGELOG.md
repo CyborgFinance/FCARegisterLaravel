@@ -2,7 +2,7 @@
 
 All notable changes to `FCARegisterLaravel` will be documented in this file.
 
-## 1.0.2 - 2025-09-20
+## 1.0.3 - 2025-09-20
 
 ### Added
 - Pest testing framework integration
@@ -22,6 +22,10 @@ All notable changes to `FCARegisterLaravel` will be documented in this file.
 ### Removed
 - Old PHPUnit ExampleTest.php
 - Legacy testing dependencies
+
+## 1.0.2 - 2021-04-00
+
+- Published Version 1.0.2 to Packagist.
 
 ## 1.0.0 - 202X-XX-XX
 
