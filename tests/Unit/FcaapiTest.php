@@ -12,29 +12,32 @@ test('Fcaapi class can be instantiated', function () {
     expect($fcaapi)->toBeInstanceOf(Fcaapi::class);
 });
 
-test('firmDetails method requires FRN number', function () {
-    expect(fn() => Fcaapi::firmDetails())
-        ->toThrow(\Exception::class, 'NO FCA FRN NUMBER PROVIDED');
+test('firmDetails method requires positive integer FRN number', function () {
+    expect(fn() => Fcaapi::firmDetails(0))
+        ->toThrow(\Exception::class, 'FCA FRN NUMBER MUST BE A POSITIVE INTEGER');
+    
+    expect(fn() => Fcaapi::firmDetails(-1))
+        ->toThrow(\Exception::class, 'FCA FRN NUMBER MUST BE A POSITIVE INTEGER');
 });
 
-test('firmDetails method accepts FRN number', function () {
-    // This test would normally mock the HTTP client
-    // For now, we just test that the method accepts the parameter
-    expect(fn() => Fcaapi::firmDetails('123456'))
-        ->not->toThrow(\Exception::class, 'NO FCA FRN NUMBER PROVIDED');
+test('firmDetails method accepts valid FRN number', function () {
+    // Test that the method accepts a valid FRN number without throwing validation errors
+    // We expect it to throw an API error since we don't have valid credentials, but not a validation error
+    expect(fn() => Fcaapi::firmDetails(123456))
+        ->not->toThrow(\Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaValidationException::class);
 });
 
 test('search method requires search parameter', function () {
-    expect(fn() => Fcaapi::search())
-        ->toThrow(\Exception::class, 'NO SEARCH PARIMITER PROVIDED');
+    expect(fn() => Fcaapi::search(''))
+        ->toThrow(\Exception::class, 'NO SEARCH PARAMETER PROVIDED');
 });
 
 test('individualDetails method requires IRN number', function () {
-    expect(fn() => Fcaapi::individualDetails())
+    expect(fn() => Fcaapi::individualDetails(''))
         ->toThrow(\Exception::class, 'NO FCA IRN NUMBER PROVIDED');
 });
 
-test('all firm methods require FRN number', function () {
+test('all firm methods require positive integer FRN number', function () {
     $methods = [
         'firmIndividuals',
         'firmName', 
@@ -50,7 +53,7 @@ test('all firm methods require FRN number', function () {
     ];
     
     foreach ($methods as $method) {
-        expect(fn() => Fcaapi::$method())
-            ->toThrow(\Exception::class, 'NO FCA FRN NUMBER PROVIDED');
+        expect(fn() => Fcaapi::$method(0))
+            ->toThrow(\Exception::class, 'FCA FRN NUMBER MUST BE A POSITIVE INTEGER');
     }
 });

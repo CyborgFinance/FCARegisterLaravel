@@ -3,137 +3,332 @@
 namespace Cyborgfinance\Fcaregisterlaravel;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\Response;
+use Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaValidationException;
+use Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaApiException;
 
 class Fcaapi
 {
+    private const DEFAULT_API_URL = 'https://register.fca.org.uk/services/';
+    private const DEFAULT_API_VERSION = '0.1';
+    private const DEFAULT_TIMEOUT = 5;
+    private const DEFAULT_RETRY_ATTEMPTS = 3;
+    private const DEFAULT_RETRY_DELAY = 100;
 
-  //Firm Details
-  public static function firmDetails($fcaFrnNumber = NULL){
-    self::validateFcaFrnNumber($fcaFrnNumber);
-    return self::fcaGet('Firm/'.$fcaFrnNumber);
+  /**
+   * Get firm details by FRN (Firm Reference Number)
+   * 
+   * @param int $fcaFrnNumber The FCA Firm Reference Number
+   * @return Response Laravel HTTP Response object
+   * @throws FcaValidationException When FRN number is invalid
+   * @throws FcaApiException When API request fails
+   */
+  public static function firmDetails(int $fcaFrnNumber): Response
+  {
+    return self::firmEndpoint($fcaFrnNumber, '');
   }
-  public static function firmIndividuals($fcaFrnNumber = NULL){
-    self::validateFcaFrnNumber($fcaFrnNumber);
-    return self::fcaGet('Firm/'.$fcaFrnNumber.'/Individuals');
+
+  /**
+   * Get individuals associated with a firm
+   * 
+   * @param int $fcaFrnNumber The FCA Firm Reference Number
+   * @return Response Laravel HTTP Response object
+   * @throws FcaValidationException When FRN number is invalid
+   * @throws FcaApiException When API request fails
+   */
+  public static function firmIndividuals(int $fcaFrnNumber): Response
+  {
+    return self::firmEndpoint($fcaFrnNumber, 'Individuals');
   }
-  public static function firmName($fcaFrnNumber = NULL){
-    self::validateFcaFrnNumber($fcaFrnNumber);
-    return self::fcaGet('Firm/'.$fcaFrnNumber.'/Names');
+
+  /**
+   * Get firm names and trading names
+   * 
+   * @param int $fcaFrnNumber The FCA Firm Reference Number
+   * @return Response Laravel HTTP Response object
+   * @throws FcaValidationException When FRN number is invalid
+   * @throws FcaApiException When API request fails
+   */
+  public static function firmName(int $fcaFrnNumber): Response
+  {
+    return self::firmEndpoint($fcaFrnNumber, 'Names');
   }
-  public static function firmRequirements($fcaFrnNumber = NULL){
-    self::validateFcaFrnNumber($fcaFrnNumber);
-    return self::fcaGet('Firm/'.$fcaFrnNumber.'/Requirements');
+
+  /**
+   * Get firm requirements and conditions
+   * 
+   * @param int $fcaFrnNumber The FCA Firm Reference Number
+   * @return Response Laravel HTTP Response object
+   * @throws FcaValidationException When FRN number is invalid
+   * @throws FcaApiException When API request fails
+   */
+  public static function firmRequirements(int $fcaFrnNumber): Response
+  {
+    return self::firmEndpoint($fcaFrnNumber, 'Requirements');
   }
-  public static function firmPermissions($fcaFrnNumber = NULL){
-    self::validateFcaFrnNumber($fcaFrnNumber);
-    return self::fcaGet('Firm/'.$fcaFrnNumber.'/Permissions');
+
+  /**
+   * Get firm permissions and regulated activities
+   * 
+   * @param int $fcaFrnNumber The FCA Firm Reference Number
+   * @return Response Laravel HTTP Response object
+   * @throws FcaValidationException When FRN number is invalid
+   * @throws FcaApiException When API request fails
+   */
+  public static function firmPermissions(int $fcaFrnNumber): Response
+  {
+    return self::firmEndpoint($fcaFrnNumber, 'Permissions');
   }
-  public static function firmPassports($fcaFrnNumber = NULL){
-    self::validateFcaFrnNumber($fcaFrnNumber);
-    return self::fcaGet('Firm/'.$fcaFrnNumber.'/Passports');
+
+  /**
+   * Get firm passports and passporting permissions
+   * 
+   * @param int $fcaFrnNumber The FCA Firm Reference Number
+   * @return Response Laravel HTTP Response object
+   * @throws FcaValidationException When FRN number is invalid
+   * @throws FcaApiException When API request fails
+   */
+  public static function firmPassports(int $fcaFrnNumber): Response
+  {
+    return self::firmEndpoint($fcaFrnNumber, 'Passports');
   }
-  public static function firmPassportCountry($fcaFrnNumber = NULL, $country = NULL){
-    self::validateFcaFrnNumber($fcaFrnNumber);
-    if(!$country){abort(403, "NO FCA COUNTRY PROVIDED");}
-    return self::fcaGet('Firm/'.$fcaFrnNumber.'/Passports/'.$country.'/Permission');
+
+  /**
+   * Get firm passport permissions for a specific country
+   * 
+   * @param int $fcaFrnNumber The FCA Firm Reference Number
+   * @param string $country The country code
+   * @return Response Laravel HTTP Response object
+   * @throws FcaValidationException When FRN number is invalid or country is not provided
+   * @throws FcaApiException When API request fails
+   */
+  public static function firmPassportCountry(int $fcaFrnNumber, string $country): Response
+  {
+    self::validateFrnNumber($fcaFrnNumber);
+    if (!$country) {
+      throw new FcaValidationException("NO FCA COUNTRY PROVIDED");
+    }
+    return self::fcaGet('Firm/' . $fcaFrnNumber . '/Passports/' . $country . '/Permission');
   }
-  public static function firmRegulators($fcaFrnNumber = NULL){
-    self::validateFcaFrnNumber($fcaFrnNumber);
-    return self::fcaGet('Firm/'.$fcaFrnNumber.'/Regulators');
+
+  /**
+   * Get firm regulators information
+   * 
+   * @param int $fcaFrnNumber The FCA Firm Reference Number
+   * @return Response Laravel HTTP Response object
+   * @throws FcaValidationException When FRN number is invalid
+   * @throws FcaApiException When API request fails
+   */
+  public static function firmRegulators(int $fcaFrnNumber): Response
+  {
+    return self::firmEndpoint($fcaFrnNumber, 'Regulators');
   }
-  public static function firmAppointedRepresentatives($fcaFrnNumber = NULL){
-    self::validateFcaFrnNumber($fcaFrnNumber);
-    return self::fcaGet('Firm/'.$fcaFrnNumber.'/AR');
+
+  /**
+   * Get firm appointed representatives
+   * 
+   * @param int $fcaFrnNumber The FCA Firm Reference Number
+   * @return Response Laravel HTTP Response object
+   * @throws FcaValidationException When FRN number is invalid
+   * @throws FcaApiException When API request fails
+   */
+  public static function firmAppointedRepresentatives(int $fcaFrnNumber): Response
+  {
+    return self::firmEndpoint($fcaFrnNumber, 'AR');
   }
-  public static function firmAddress($fcaFrnNumber = NULL){
-    self::validateFcaFrnNumber($fcaFrnNumber);
-    return self::fcaGet('Firm/'.$fcaFrnNumber.'/Address');
+
+  /**
+   * Get firm address details
+   * 
+   * @param int $fcaFrnNumber The FCA Firm Reference Number
+   * @return Response Laravel HTTP Response object
+   * @throws FcaValidationException When FRN number is invalid
+   * @throws FcaApiException When API request fails
+   */
+  public static function firmAddress(int $fcaFrnNumber): Response
+  {
+    return self::firmEndpoint($fcaFrnNumber, 'Address');
   }
-  public static function firmWaivers($fcaFrnNumber = NULL){
-    self::validateFcaFrnNumber($fcaFrnNumber);
-    return self::fcaGet('Firm/'.$fcaFrnNumber.'/Waivers');
+
+  /**
+   * Get firm waivers and variations
+   * 
+   * @param int $fcaFrnNumber The FCA Firm Reference Number
+   * @return Response Laravel HTTP Response object
+   * @throws FcaValidationException When FRN number is invalid
+   * @throws FcaApiException When API request fails
+   */
+  public static function firmWaivers(int $fcaFrnNumber): Response
+  {
+    return self::firmEndpoint($fcaFrnNumber, 'Waivers');
   }
-  //Exclusions
-  public static function firmExclusions($fcaFrnNumber = NULL){
-    self::validateFcaFrnNumber($fcaFrnNumber);
-    return self::fcaGet('Firm/'.$fcaFrnNumber.'/Exclusions');
+
+  /**
+   * Get firm exclusions information
+   * 
+   * @param int $fcaFrnNumber The FCA Firm Reference Number
+   * @return Response Laravel HTTP Response object
+   * @throws FcaValidationException When FRN number is invalid
+   * @throws FcaApiException When API request fails
+   */
+  public static function firmExclusions(int $fcaFrnNumber): Response
+  {
+    return self::firmEndpoint($fcaFrnNumber, 'Exclusions');
   }
-  //DisciplinaryHistory
-  public static function firmDisciplinaryHistory($fcaFrnNumber = NULL){
-    self::validateFcaFrnNumber($fcaFrnNumber);
-    return self::fcaGet('Firm/'.$fcaFrnNumber.'/DisciplinaryHistory');
+
+  /**
+   * Get firm disciplinary history
+   * 
+   * @param int $fcaFrnNumber The FCA Firm Reference Number
+   * @return Response Laravel HTTP Response object
+   * @throws FcaValidationException When FRN number is invalid
+   * @throws FcaApiException When API request fails
+   */
+  public static function firmDisciplinaryHistory(int $fcaFrnNumber): Response
+  {
+    return self::firmEndpoint($fcaFrnNumber, 'DisciplinaryHistory');
   }
   //-----------------
-  public static function individualDetails($fcaIrnNumber = NULL){
-    if(!$fcaIrnNumber){abort(403, "NO FCA IRN NUMBER PROVIDED");}
-    return self::fcaGet('Individuals/'.$fcaIrnNumber);
+  /**
+   * Get individual details by IRN (Individual Reference Number)
+   * 
+   * @param string $fcaIrnNumber The FCA Individual Reference Number
+   * @return Response Laravel HTTP Response object
+   * @throws FcaValidationException When IRN number is invalid
+   * @throws FcaApiException When API request fails
+   */
+  public static function individualDetails(string $fcaIrnNumber): Response
+  {
+    self::validateIrnNumber($fcaIrnNumber);
+    return self::fcaGet('Individuals/' . $fcaIrnNumber);
   }
-  public static function individualFunctions($fcaIrnNumber = NULL){
-    if(!$fcaIrnNumber){abort(403, "NO FCA IRN NUMBER PROVIDED");}
-    return self::fcaGet('Individuals/'.$fcaIrnNumber.'/CF');
+
+  /**
+   * Get individual controlled functions and roles
+   * 
+   * @param string $fcaIrnNumber The FCA Individual Reference Number
+   * @return Response Laravel HTTP Response object
+   * @throws FcaValidationException When IRN number is invalid
+   * @throws FcaApiException When API request fails
+   */
+  public static function individualFunctions(string $fcaIrnNumber): Response
+  {
+    self::validateIrnNumber($fcaIrnNumber);
+    return self::fcaGet('Individuals/' . $fcaIrnNumber . '/CF');
   }
+
   //-----------
-  public static function search($search = NULL){
-    if(!$search){abort(403, "NO SEARCH PARIMITER PROVIDED");}
-    return self::fcaGet('Search?q='.$search.'&per_page=10');
+  /**
+   * Search FCA register for firms and individuals
+   * 
+   * @param string $search The search term
+   * @return Response Laravel HTTP Response object
+   * @throws FcaValidationException When search parameter is not provided
+   * @throws FcaApiException When API request fails
+   */
+  public static function search(string $search): Response
+  {
+    if (!$search) {
+      throw new FcaValidationException("NO SEARCH PARAMETER PROVIDED");
+    }
+    return self::fcaGet('Search?q=' . $search . '&per_page=10');
   }
-  public static function searchRm(){
+
+  /**
+   * Search for firms with RM (Restricted Mortgage) permissions
+   * 
+   * @return Response Laravel HTTP Response object
+   * @throws FcaApiException When API request fails
+   */
+  public static function searchRm(): Response
+  {
     return self::fcaGet('CommonSearch?q=RM');
   }
 
-  private static function fcaGet($uri = NULL){
+  private static function fcaGet(string $uri): Response
+  {
+    if (!$uri) {
+      throw new FcaValidationException("NO URI Detected");
+    }
 
-    //BASIC ERROR DETECTION
-    if(!$uri){abort(403, "NO URI Detetcted");}
+    $apiUrl = self::getApiUrl($uri);
 
-    //Generate FCA API Lookup URL
-    $apiUrl = config('fcaapi.api_url', 'https://register.fca.org.uk/services/').'V'.config('fcaapi.api_version', '0.1').'/'.$uri;
-
-    //Query FCA API
     $response = Http::withHeaders([
       'X-Auth-Email' => config('fcaapi.email'),
       'X-Auth-Key' => config('fcaapi.key'),
       'Content-Type' => 'application/json'
     ])
-    ->timeout(config('fcaapi.api_timeout', 5))
-    ->retry(3, 100)
+    ->timeout(config('fcaapi.api_timeout', self::DEFAULT_TIMEOUT))
+    ->retry(self::DEFAULT_RETRY_ATTEMPTS, self::DEFAULT_RETRY_DELAY)
     ->get($apiUrl);
 
-    //Error Handleing
-    if($response['Status']){
-      self::statusCodes($response['Status']);
-    }
-    if($response->failed()){$response->throw();}
-    if($response->clientError()){$response->throw();}
-    if($response->serverError()){$response->throw();}
-
-    //outputs
-    //$response->body() : string;
-    //$response->json() : array|mixed;
-    //$response->collect() : Illuminate\Support\Collection;
+    self::handleApiResponse($response);
 
     return $response;
   }
 
-  private static function validateFcaFrnNumber($fcaFrnNumber){
-    if(!$fcaFrnNumber){abort(403, "NO FCA FRN NUMBER PROVIDED");}
+  private static function validateFrnNumber(int $fcaFrnNumber): void
+  {
+    if ($fcaFrnNumber <= 0) {
+      throw new FcaValidationException("FCA FRN NUMBER MUST BE A POSITIVE INTEGER");
+    }
   }
 
-  private static function statusCodes($code){
+  private static function validateIrnNumber(string $fcaIrnNumber): void
+  {
+    if (empty(trim($fcaIrnNumber))) {
+      throw new FcaValidationException("NO FCA IRN NUMBER PROVIDED");
+    }
+  }
 
-    if(!$code){abort(403, "NO FCA STATUS CODE");}
+  private static function firmEndpoint(int $fcaFrnNumber, string $endpoint): Response
+  {
+    self::validateFrnNumber($fcaFrnNumber);
+    $uri = 'Firm/' . $fcaFrnNumber;
+    if ($endpoint) {
+      $uri .= '/' . $endpoint;
+    }
+    return self::fcaGet($uri);
+  }
+
+  private static function getApiUrl(string $uri): string
+  {
+    $baseUrl = config('fcaapi.api_url', self::DEFAULT_API_URL);
+    $version = config('fcaapi.api_version', self::DEFAULT_API_VERSION);
+    return $baseUrl . 'V' . $version . '/' . $uri;
+  }
+
+  private static function handleApiResponse(Response $response): void
+  {
+    if (isset($response['Status'])) {
+      self::handleStatusCodes($response['Status']);
+    }
+
+    if ($response->failed()) {
+      $response->throw();
+    }
+  }
+
+  private static function handleStatusCodes(string $code): void
+  {
+    if (!$code) {
+      throw new FcaApiException("NO FCA STATUS CODE");
+    }
 
     switch ($code) {
-        //Success Codes
-        case 'FSR-API-02-05-00': break;
-        //Error Codes
-        case 'FSR-API-02-05-11': abort(403, "Bad Request : Invalid Input"); break;
-        case 'FSR-API-01-01-11': abort(403, 'Unauthorised: Please include a valid API key and Email address'); break;
-        //--firmIndividuals
-        case 'FSR-API-02-05-21': abort(403, 'ERROR : Individual Not Found'); break;
-        //--
+      //Success Codes
+      case 'FSR-API-02-05-00':
+        break;
+      //Error Codes
+      case 'FSR-API-02-05-11':
+        throw new FcaApiException("Bad Request : Invalid Input");
+      case 'FSR-API-01-01-11':
+        throw new FcaApiException('Unauthorised: Please include a valid API key and Email address');
+      //--firmIndividuals
+      case 'FSR-API-02-05-21':
+        throw new FcaApiException('ERROR : Individual Not Found');
+      //--
     }
-    return TRUE;
   }
 
 
