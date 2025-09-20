@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cyborgfinance\Fcaregisterlaravel\Tests\Unit;
 
 use Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaApiException;
 use Cyborgfinance\Fcaregisterlaravel\FcaApiClient;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
-class FcaApiClientTest extends TestCase
+final class FcaApiClientTest extends TestCase
 {
     private FcaApiClient $client;
 
@@ -16,7 +19,7 @@ class FcaApiClientTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_exception_for_empty_uri()
+    public function it_throws_exception_for_empty_uri(): void
     {
         $this->expectException(FcaApiException::class);
         $this->expectExceptionMessage('NO URI Detected');
@@ -25,9 +28,9 @@ class FcaApiClientTest extends TestCase
     }
 
     /** @test */
-    public function it_constructs_correct_api_url_with_defaults()
+    public function it_constructs_correct_api_url_with_defaults(): void
     {
-        $reflection = new \ReflectionClass($this->client);
+        $reflection = new ReflectionClass($this->client);
         $method = $reflection->getMethod('getApiUrl');
         $method->setAccessible(true);
 
@@ -37,10 +40,10 @@ class FcaApiClientTest extends TestCase
     }
 
     /** @test */
-    public function it_handles_config_values()
+    public function it_handles_config_values(): void
     {
         // Test that the method exists and can be called
-        $reflection = new \ReflectionClass($this->client);
+        $reflection = new ReflectionClass($this->client);
         $method = $reflection->getMethod('getApiUrl');
         $method->setAccessible(true);
 

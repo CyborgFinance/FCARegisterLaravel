@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 use Cyborgfinance\Fcaregisterlaravel\Fcaapi;
 use Illuminate\Support\Facades\Http;
 
-test('Fcaapi integrates with Laravel HTTP client', function () {
+test('Fcaapi integrates with Laravel HTTP client', function (): void {
     // Mock the HTTP client
     Http::fake([
         '*' => Http::response(['Status' => 'FSR-API-02-05-00', 'Data' => []], 200),
@@ -15,16 +17,16 @@ test('Fcaapi integrates with Laravel HTTP client', function () {
     expect($response->json())->toHaveKey('Data');
 });
 
-test('Fcaapi handles API errors gracefully', function () {
+test('Fcaapi handles API errors gracefully', function (): void {
     Http::fake([
         '*' => Http::response(['Status' => 'FSR-API-01-01-11'], 401),
     ]);
 
-    expect(fn () => Fcaapi::firmDetails('123456'))
-        ->toThrow(\Exception::class);
+    expect(fn (): Illuminate\Http\Client\Response => Fcaapi::firmDetails('123456'))
+        ->toThrow(Exception::class);
 });
 
-test('Fcaapi uses correct API endpoint configuration', function () {
+test('Fcaapi uses correct API endpoint configuration', function (): void {
     Http::fake([
         'https://custom.api.com/V0.2/Firm/123456' => Http::response(['Status' => 'FSR-API-02-05-00', 'Data' => []], 200),
     ]);
@@ -39,7 +41,7 @@ test('Fcaapi uses correct API endpoint configuration', function () {
     expect($response->status())->toBe(200);
 });
 
-test('Fcaapi search functionality works', function () {
+test('Fcaapi search functionality works', function (): void {
     Http::fake([
         '*' => Http::response(['Status' => 'FSR-API-02-05-00', 'Data' => ['results' => []]], 200),
     ]);

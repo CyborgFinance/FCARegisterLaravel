@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cyborgfinance\Fcaregisterlaravel\Tests\Unit;
 
 use Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaApiException;
 use Cyborgfinance\Fcaregisterlaravel\FcaErrorHandler;
 use PHPUnit\Framework\TestCase;
 
-class FcaErrorHandlerTest extends TestCase
+final class FcaErrorHandlerTest extends TestCase
 {
     /** @test */
-    public function it_handles_success_codes_without_throwing_exceptions()
+    public function it_handles_success_codes_without_throwing_exceptions(): void
     {
         // Test various success codes
         $successCodes = [
@@ -27,7 +29,7 @@ class FcaErrorHandlerTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_exception_for_empty_status_code()
+    public function it_throws_exception_for_empty_status_code(): void
     {
         $this->expectException(FcaApiException::class);
         $this->expectExceptionMessage('NO FCA STATUS CODE');
@@ -36,7 +38,7 @@ class FcaErrorHandlerTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_exception_for_login_errors()
+    public function it_throws_exception_for_login_errors(): void
     {
         $this->expectException(FcaApiException::class);
         $this->expectExceptionMessage('Unauthorised');
@@ -45,7 +47,7 @@ class FcaErrorHandlerTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_exception_for_firm_not_found_error()
+    public function it_throws_exception_for_firm_not_found_error(): void
     {
         $this->expectException(FcaApiException::class);
         $this->expectExceptionMessage('Firm not found');
@@ -54,7 +56,7 @@ class FcaErrorHandlerTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_exception_for_individual_not_found_error()
+    public function it_throws_exception_for_individual_not_found_error(): void
     {
         $this->expectException(FcaApiException::class);
         $this->expectExceptionMessage('Individual not found');
@@ -63,7 +65,7 @@ class FcaErrorHandlerTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_exception_for_bad_request_errors()
+    public function it_throws_exception_for_bad_request_errors(): void
     {
         $this->expectException(FcaApiException::class);
         $this->expectExceptionMessage('Bad request: Invalid Input');
@@ -72,7 +74,7 @@ class FcaErrorHandlerTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_exception_for_page_not_found_errors()
+    public function it_throws_exception_for_page_not_found_errors(): void
     {
         $this->expectException(FcaApiException::class);
         $this->expectExceptionMessage('Page Not found');
@@ -81,7 +83,7 @@ class FcaErrorHandlerTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_exception_for_search_errors()
+    public function it_throws_exception_for_search_errors(): void
     {
         $this->expectException(FcaApiException::class);
         $this->expectExceptionMessage('No search result found');
@@ -90,7 +92,7 @@ class FcaErrorHandlerTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_exception_for_generic_system_errors()
+    public function it_throws_exception_for_generic_system_errors(): void
     {
         $this->expectException(FcaApiException::class);
         $this->expectExceptionMessage('System Error');
@@ -99,7 +101,7 @@ class FcaErrorHandlerTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_exception_for_unknown_status_codes()
+    public function it_throws_exception_for_unknown_status_codes(): void
     {
         $this->expectException(FcaApiException::class);
         $this->expectExceptionMessage('Unknown FCA status code: FSR-API-99-99-98');
@@ -108,7 +110,7 @@ class FcaErrorHandlerTest extends TestCase
     }
 
     /** @test */
-    public function it_identifies_success_codes_correctly()
+    public function it_identifies_success_codes_correctly(): void
     {
         $this->assertTrue(FcaErrorHandler::isSuccessCode('FSR-API-01-01-00'));
         $this->assertTrue(FcaErrorHandler::isSuccessCode('FSR-API-02-05-00'));
@@ -117,7 +119,7 @@ class FcaErrorHandlerTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_error_message_for_error_codes()
+    public function it_returns_error_message_for_error_codes(): void
     {
         $this->assertEquals('', FcaErrorHandler::getErrorMessage('FSR-API-01-01-00'));
         $this->assertEquals('Unauthorised', FcaErrorHandler::getErrorMessage('FSR-API-01-01-11'));
@@ -127,7 +129,7 @@ class FcaErrorHandlerTest extends TestCase
     }
 
     /** @test */
-    public function it_handles_all_error_codes_from_csv()
+    public function it_handles_all_error_codes_from_csv(): void
     {
         // Test a sampling of error codes to ensure comprehensive coverage
         $errorCodes = [

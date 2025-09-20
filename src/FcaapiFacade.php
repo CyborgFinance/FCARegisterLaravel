@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cyborgfinance\Fcaregisterlaravel;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \Cyborgfinance\Fcaregisterlaravel\Fcaapi
+ * @see Fcaapi
  */
-class FcaapiFacade extends Facade
+final class FcaapiFacade extends Facade
 {
     protected static function getFacadeAccessor()
     {

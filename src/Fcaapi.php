@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cyborgfinance\Fcaregisterlaravel;
 
 use Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaValidationException;
 use Illuminate\Http\Client\Response;
 
-class Fcaapi
+final class Fcaapi
 {
     private static ?FcaApiClient $client = null;
 
@@ -343,7 +345,7 @@ class Fcaapi
     {
         self::getValidator()->validateFrnNumber($fcaFrnNumber);
         $uri = 'Firm/'.$fcaFrnNumber;
-        if ($endpoint) {
+        if ($endpoint !== '' && $endpoint !== '0') {
             $uri .= '/'.$endpoint;
         }
 
@@ -352,7 +354,7 @@ class Fcaapi
 
     private static function getClient(): FcaApiClient
     {
-        if (self::$client === null) {
+        if (! self::$client instanceof FcaApiClient) {
             self::$client = new FcaApiClient;
         }
 
@@ -361,7 +363,7 @@ class Fcaapi
 
     private static function getValidator(): FcaValidator
     {
-        if (self::$validator === null) {
+        if (! self::$validator instanceof FcaValidator) {
             self::$validator = new FcaValidator;
         }
 

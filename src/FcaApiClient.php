@@ -1,26 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cyborgfinance\Fcaregisterlaravel;
 
 use Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaApiException;
+use Exception;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
-class FcaApiClient
+final class FcaApiClient
 {
-    private const DEFAULT_API_URL = 'https://register.fca.org.uk/services/';
+    private const string DEFAULT_API_URL = 'https://register.fca.org.uk/services/';
 
-    private const DEFAULT_API_VERSION = '0.1';
+    private const string DEFAULT_API_VERSION = '0.1';
 
-    private const DEFAULT_TIMEOUT = 5;
+    private const int DEFAULT_TIMEOUT = 5;
 
-    private const DEFAULT_RETRY_ATTEMPTS = 3;
+    private const int DEFAULT_RETRY_ATTEMPTS = 3;
 
-    private const DEFAULT_RETRY_DELAY = 100;
+    private const int DEFAULT_RETRY_DELAY = 100;
 
     public function get(string $uri): Response
     {
-        if (! $uri) {
+        if ($uri === '' || $uri === '0') {
             throw new FcaApiException('NO URI Detected');
         }
 
@@ -54,7 +57,7 @@ class FcaApiClient
             if (function_exists('config')) {
                 return config($key, $default);
             }
-        } catch (\Exception $e) {
+        } catch (Exception) {
             // Ignore config errors in unit tests
         }
 

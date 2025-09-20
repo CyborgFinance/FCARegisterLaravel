@@ -1,15 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cyborgfinance\Fcaregisterlaravel\Tests\Feature\Live;
 
 use Cyborgfinance\Fcaregisterlaravel\Fcaapi;
 use Cyborgfinance\Fcaregisterlaravel\Tests\TestCase;
+use Exception;
 
 /**
  * @group live
  * @group integration
  */
-class FcaApiLiveTest extends TestCase
+final class FcaApiLiveTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -30,10 +33,10 @@ class FcaApiLiveTest extends TestCase
     }
 
     /** @test */
-    public function it_can_retrieve_firm_details_using_real_api()
+    public function it_can_retrieve_firm_details_using_real_api(): void
     {
         // Use a known FCA firm number (e.g., a major bank)
-        $testFrn = '919921'; // Example: Cyborg Finance LTD
+        $testFrn = 919921; // Example: Cyborg Finance LTD
 
         $response = Fcaapi::firmDetails($testFrn);
 
@@ -48,7 +51,7 @@ class FcaApiLiveTest extends TestCase
     }
 
     /** @test */
-    public function it_can_search_for_firms_using_real_api()
+    public function it_can_search_for_firms_using_real_api(): void
     {
         $searchTerm = 'Cyborg';
 
@@ -64,9 +67,9 @@ class FcaApiLiveTest extends TestCase
     }
 
     /** @test */
-    public function it_can_retrieve_firm_names_using_real_api()
+    public function it_can_retrieve_firm_names_using_real_api(): void
     {
-        $testFrn = '919921'; // Cyborg Finance LTD
+        $testFrn = 919921; // Cyborg Finance LTD
 
         $response = Fcaapi::firmName($testFrn);
 
@@ -80,9 +83,9 @@ class FcaApiLiveTest extends TestCase
     }
 
     /** @test */
-    public function it_can_retrieve_firm_permissions_using_real_api()
+    public function it_can_retrieve_firm_permissions_using_real_api(): void
     {
-        $testFrn = '919921'; // Cyborg Finance LTD
+        $testFrn = (int) '919921'; // Cyborg Finance LTD
 
         $response = Fcaapi::firmPermissions($testFrn);
 
@@ -96,7 +99,7 @@ class FcaApiLiveTest extends TestCase
     }
 
     /** @test */
-    public function it_handles_invalid_frn_numbers_gracefully()
+    public function it_handles_invalid_frn_numbers_gracefully(): void
     {
         $invalidFrn = '999999999'; // Very unlikely to exist
 
@@ -105,16 +108,16 @@ class FcaApiLiveTest extends TestCase
             $response = Fcaapi::firmDetails($invalidFrn);
             // If no exception, should return an error status
             expect($response->status())->not->toBe(200);
-        } catch (\Exception $e) {
+        } catch (Exception) {
             // Exception is also acceptable behavior
             expect(true)->toBeTrue();
         }
     }
 
     /** @test */
-    public function it_can_retrieve_firm_address_using_real_api()
+    public function it_can_retrieve_firm_address_using_real_api(): void
     {
-        $testFrn = '919921'; // Cyborg Finance LTD
+        $testFrn = (int) '919921'; // Cyborg Finance LTD
 
         $response = Fcaapi::firmAddress($testFrn);
 
@@ -128,9 +131,9 @@ class FcaApiLiveTest extends TestCase
     }
 
     /** @test */
-    public function it_can_retrieve_firm_individuals_using_real_api()
+    public function it_can_retrieve_firm_individuals_using_real_api(): void
     {
-        $testFrn = '919921'; // Cyborg Finance LTD
+        $testFrn = 919921; // Cyborg Finance LTD
 
         // This endpoint may not be available or may require different parameters
         try {
@@ -143,14 +146,14 @@ class FcaApiLiveTest extends TestCase
 
             // Basic verification that we got a response
             expect($response->json())->toBeArray();
-        } catch (\Exception $e) {
+        } catch (Exception) {
             // If the endpoint doesn't exist or returns an error, that's acceptable for a live test
             expect(true)->toBeTrue();
         }
     }
 
     /** @test */
-    public function it_can_perform_common_search_using_real_api()
+    public function it_can_perform_common_search_using_real_api(): void
     {
         $response = Fcaapi::searchRm();
 
@@ -161,9 +164,9 @@ class FcaApiLiveTest extends TestCase
     }
 
     /** @test */
-    public function it_respects_rate_limits_with_multiple_requests()
+    public function it_respects_rate_limits_with_multiple_requests(): void
     {
-        $testFrn = '919921';
+        $testFrn = 919921;
 
         // Make multiple requests to test rate limiting
         $responses = [];

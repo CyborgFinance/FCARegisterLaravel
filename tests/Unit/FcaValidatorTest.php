@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cyborgfinance\Fcaregisterlaravel\Tests\Unit;
 
 use Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaValidationException;
 use Cyborgfinance\Fcaregisterlaravel\FcaValidator;
 use PHPUnit\Framework\TestCase;
 
-class FcaValidatorTest extends TestCase
+final class FcaValidatorTest extends TestCase
 {
     /** @test */
-    public function it_validates_positive_frn_numbers()
+    public function it_validates_positive_frn_numbers(): void
     {
         // Should not throw exception for valid FRN numbers
         FcaValidator::validateFrnNumber(1);
@@ -18,7 +20,7 @@ class FcaValidatorTest extends TestCase
     }
 
     /** @test */
-    public function it_rejects_zero_frn_number()
+    public function it_rejects_zero_frn_number(): void
     {
         $this->expectException(FcaValidationException::class);
         $this->expectExceptionMessage('FCA FRN NUMBER MUST BE A POSITIVE INTEGER');
@@ -27,7 +29,7 @@ class FcaValidatorTest extends TestCase
     }
 
     /** @test */
-    public function it_rejects_negative_frn_number()
+    public function it_rejects_negative_frn_number(): void
     {
         $this->expectException(FcaValidationException::class);
         $this->expectExceptionMessage('FCA FRN NUMBER MUST BE A POSITIVE INTEGER');
@@ -36,7 +38,7 @@ class FcaValidatorTest extends TestCase
     }
 
     /** @test */
-    public function it_validates_irn_numbers()
+    public function it_validates_irn_numbers(): void
     {
         // Should not throw exception for valid IRN numbers
         FcaValidator::validateIrnNumber('ABC123');
@@ -45,7 +47,7 @@ class FcaValidatorTest extends TestCase
     }
 
     /** @test */
-    public function it_rejects_empty_irn_number()
+    public function it_rejects_empty_irn_number(): void
     {
         $this->expectException(FcaValidationException::class);
         $this->expectExceptionMessage('NO FCA IRN NUMBER PROVIDED');
@@ -54,7 +56,7 @@ class FcaValidatorTest extends TestCase
     }
 
     /** @test */
-    public function it_rejects_whitespace_only_irn_number()
+    public function it_rejects_whitespace_only_irn_number(): void
     {
         $this->expectException(FcaValidationException::class);
         $this->expectExceptionMessage('NO FCA IRN NUMBER PROVIDED');
@@ -63,7 +65,7 @@ class FcaValidatorTest extends TestCase
     }
 
     /** @test */
-    public function it_validates_country_parameter()
+    public function it_validates_country_parameter(): void
     {
         // Should not throw exception for valid country
         FcaValidator::validateCountry('GB');
@@ -72,7 +74,7 @@ class FcaValidatorTest extends TestCase
     }
 
     /** @test */
-    public function it_rejects_empty_country()
+    public function it_rejects_empty_country(): void
     {
         $this->expectException(FcaValidationException::class);
         $this->expectExceptionMessage('NO FCA COUNTRY PROVIDED');
@@ -81,7 +83,7 @@ class FcaValidatorTest extends TestCase
     }
 
     /** @test */
-    public function it_validates_search_parameter()
+    public function it_validates_search_parameter(): void
     {
         // Should not throw exception for valid search
         FcaValidator::validateSearch('test search');
@@ -90,7 +92,7 @@ class FcaValidatorTest extends TestCase
     }
 
     /** @test */
-    public function it_rejects_empty_search()
+    public function it_rejects_empty_search(): void
     {
         $this->expectException(FcaValidationException::class);
         $this->expectExceptionMessage('NO SEARCH PARAMETER PROVIDED');
@@ -99,7 +101,7 @@ class FcaValidatorTest extends TestCase
     }
 
     /** @test */
-    public function it_validates_req_ref_parameter()
+    public function it_validates_req_ref_parameter(): void
     {
         // Should not throw exception for valid requirement reference
         FcaValidator::validateReqRef('REQ123');
@@ -108,7 +110,7 @@ class FcaValidatorTest extends TestCase
     }
 
     /** @test */
-    public function it_rejects_empty_req_ref()
+    public function it_rejects_empty_req_ref(): void
     {
         $this->expectException(FcaValidationException::class);
         $this->expectExceptionMessage('NO REQUIREMENT REFERENCE PROVIDED');
@@ -117,7 +119,7 @@ class FcaValidatorTest extends TestCase
     }
 
     /** @test */
-    public function it_rejects_whitespace_only_req_ref()
+    public function it_rejects_whitespace_only_req_ref(): void
     {
         $this->expectException(FcaValidationException::class);
         $this->expectExceptionMessage('NO REQUIREMENT REFERENCE PROVIDED');
@@ -126,7 +128,7 @@ class FcaValidatorTest extends TestCase
     }
 
     /** @test */
-    public function it_validates_search_type_parameter()
+    public function it_validates_search_type_parameter(): void
     {
         // Should not throw exception for valid search types
         FcaValidator::validateSearchType('firm');
@@ -137,7 +139,7 @@ class FcaValidatorTest extends TestCase
     }
 
     /** @test */
-    public function it_rejects_invalid_search_type()
+    public function it_rejects_invalid_search_type(): void
     {
         $this->expectException(FcaValidationException::class);
         $this->expectExceptionMessage('INVALID SEARCH TYPE. MUST BE ONE OF: firm, individual, fund');

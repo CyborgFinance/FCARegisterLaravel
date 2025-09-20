@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 // FCA API (fcaapi) Configuration
 
 return [

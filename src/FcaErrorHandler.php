@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cyborgfinance\Fcaregisterlaravel;
 
 use Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaApiException;
 
-class FcaErrorHandler
+final class FcaErrorHandler
 {
     /**
      * Handle FCA API status codes and throw appropriate exceptions
@@ -15,7 +17,7 @@ class FcaErrorHandler
      */
     public static function handleStatusCode(string $code): void
     {
-        if (! $code) {
+        if ($code === '' || $code === '0') {
             throw new FcaApiException('NO FCA STATUS CODE');
         }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -13,7 +15,7 @@
 
 // Load .env file for tests
 if (file_exists(dirname(__DIR__).'/.env')) {
-    $dotenv = \Dotenv\Dotenv::createImmutable(dirname(__DIR__));
+    $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
     $dotenv->load();
 }
 
@@ -31,9 +33,7 @@ uses(Cyborgfinance\Fcaregisterlaravel\Tests\TestCase::class)
 |
 */
 
-expect()->extend('toBeOne', function () {
-    return $this->toBe(1);
-});
+expect()->extend('toBeOne', fn () => $this->toBe(1));
 
 /*
 |--------------------------------------------------------------------------
@@ -46,7 +46,7 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function setupFcaApiConfig()
+function setupFcaApiConfig(): void
 {
     config([
         'fcaapi.email' => 'test@example.com',
