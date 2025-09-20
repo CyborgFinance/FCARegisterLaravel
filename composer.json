@@ -28,8 +28,14 @@
         "spatie/laravel-package-tools": "^1.16"
     },
     "require-dev": {
+        "larastan/larastan": "^2.11",
+        "laravel/boost": "^1.2",
+        "laravel/pint": "^1.25",
+        "orchestra/testbench": "^8.0",
         "pestphp/pest": "^2.34",
-        "pestphp/pest-plugin-laravel": "^2.3"
+        "pestphp/pest-plugin-laravel": "^2.3",
+        "pestphp/pest-plugin-type-coverage": "^2.8",
+        "rector/rector": "^1.2"
     },
     "autoload": {
         "psr-4": {
@@ -48,10 +54,25 @@
         "sort-packages": true
     },
     "scripts": {
+        "lint": [
+            "pint",
+            "rector"
+        ],
         "test": "./vendor/bin/pest",
         "test-coverage": "./vendor/bin/pest --coverage",
         "test-live": "RUN_LIVE_TESTS=true ./vendor/bin/pest --group=live",
-        "test-quick": "./vendor/bin/pest --exclude-group=live,integration"
+        "test-quick": "./vendor/bin/pest --exclude-group=live,integration",
+        "test:type-coverage": "./vendor/bin/pest --type-coverage --min=100",
+        "test:full": [
+            "echo '--- starting test type coverage ---'",
+            "@test:type-coverage",
+            "echo '--- starting test lint ---'",
+            "pint --test",
+            "echo '--- starting test rector ---'",
+            "rector --dry-run",
+            "echo '--- starting test types ---'",
+            "phpstan"
+        ]
     },
     "extra": {
         "laravel": {
