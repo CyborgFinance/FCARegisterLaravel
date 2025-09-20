@@ -2,8 +2,8 @@
 
 namespace Cyborgfinance\Fcaregisterlaravel\Tests\Unit;
 
-use Cyborgfinance\Fcaregisterlaravel\FcaErrorHandler;
 use Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaApiException;
+use Cyborgfinance\Fcaregisterlaravel\FcaErrorHandler;
 use PHPUnit\Framework\TestCase;
 
 class FcaErrorHandlerTest extends TestCase
@@ -31,7 +31,7 @@ class FcaErrorHandlerTest extends TestCase
     {
         $this->expectException(FcaApiException::class);
         $this->expectExceptionMessage('NO FCA STATUS CODE');
-        
+
         FcaErrorHandler::handleStatusCode('');
     }
 
@@ -40,7 +40,7 @@ class FcaErrorHandlerTest extends TestCase
     {
         $this->expectException(FcaApiException::class);
         $this->expectExceptionMessage('Unauthorised');
-        
+
         FcaErrorHandler::handleStatusCode('FSR-API-01-01-11');
     }
 
@@ -49,7 +49,7 @@ class FcaErrorHandlerTest extends TestCase
     {
         $this->expectException(FcaApiException::class);
         $this->expectExceptionMessage('Firm not found');
-        
+
         FcaErrorHandler::handleStatusCode('FSR-API-02-01-11');
     }
 
@@ -58,7 +58,7 @@ class FcaErrorHandlerTest extends TestCase
     {
         $this->expectException(FcaApiException::class);
         $this->expectExceptionMessage('Individual not found');
-        
+
         FcaErrorHandler::handleStatusCode('FSR-API-02-05-11');
     }
 
@@ -67,7 +67,7 @@ class FcaErrorHandlerTest extends TestCase
     {
         $this->expectException(FcaApiException::class);
         $this->expectExceptionMessage('Bad request: Invalid Input');
-        
+
         FcaErrorHandler::handleStatusCode('FSR-API-02-01-21');
     }
 
@@ -76,7 +76,7 @@ class FcaErrorHandlerTest extends TestCase
     {
         $this->expectException(FcaApiException::class);
         $this->expectExceptionMessage('Page Not found');
-        
+
         FcaErrorHandler::handleStatusCode('FSR-API-02-04-22');
     }
 
@@ -85,7 +85,7 @@ class FcaErrorHandlerTest extends TestCase
     {
         $this->expectException(FcaApiException::class);
         $this->expectExceptionMessage('No search result found');
-        
+
         FcaErrorHandler::handleStatusCode('FSR-API-04-01-11');
     }
 
@@ -94,7 +94,7 @@ class FcaErrorHandlerTest extends TestCase
     {
         $this->expectException(FcaApiException::class);
         $this->expectExceptionMessage('System Error');
-        
+
         FcaErrorHandler::handleStatusCode('FSR-API-99-01-01');
     }
 
@@ -103,7 +103,7 @@ class FcaErrorHandlerTest extends TestCase
     {
         $this->expectException(FcaApiException::class);
         $this->expectExceptionMessage('Unknown FCA status code: FSR-API-99-99-98');
-        
+
         FcaErrorHandler::handleStatusCode('FSR-API-99-99-98');
     }
 

@@ -2,8 +2,8 @@
 
 namespace Cyborgfinance\Fcaregisterlaravel\Tests\Unit;
 
-use Cyborgfinance\Fcaregisterlaravel\FcaApiClient;
 use Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaApiException;
+use Cyborgfinance\Fcaregisterlaravel\FcaApiClient;
 use PHPUnit\Framework\TestCase;
 
 class FcaApiClientTest extends TestCase
@@ -12,7 +12,7 @@ class FcaApiClientTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->client = new FcaApiClient();
+        $this->client = new FcaApiClient;
     }
 
     /** @test */
@@ -20,7 +20,7 @@ class FcaApiClientTest extends TestCase
     {
         $this->expectException(FcaApiException::class);
         $this->expectExceptionMessage('NO URI Detected');
-        
+
         $this->client->get('');
     }
 
@@ -30,9 +30,9 @@ class FcaApiClientTest extends TestCase
         $reflection = new \ReflectionClass($this->client);
         $method = $reflection->getMethod('getApiUrl');
         $method->setAccessible(true);
-        
+
         $url = $method->invoke($this->client, 'Firm/123456');
-        
+
         $this->assertEquals('https://register.fca.org.uk/services/V0.1/Firm/123456', $url);
     }
 
@@ -43,9 +43,9 @@ class FcaApiClientTest extends TestCase
         $reflection = new \ReflectionClass($this->client);
         $method = $reflection->getMethod('getApiUrl');
         $method->setAccessible(true);
-        
+
         $url = $method->invoke($this->client, 'test/endpoint');
-        
+
         $this->assertIsString($url);
         $this->assertStringContainsString('test/endpoint', $url);
     }

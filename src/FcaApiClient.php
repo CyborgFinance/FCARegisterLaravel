@@ -2,22 +2,26 @@
 
 namespace Cyborgfinance\Fcaregisterlaravel;
 
-use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Client\Response;
 use Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaApiException;
+use Illuminate\Http\Client\Response;
+use Illuminate\Support\Facades\Http;
 
 class FcaApiClient
 {
     private const DEFAULT_API_URL = 'https://register.fca.org.uk/services/';
+
     private const DEFAULT_API_VERSION = '0.1';
+
     private const DEFAULT_TIMEOUT = 5;
+
     private const DEFAULT_RETRY_ATTEMPTS = 3;
+
     private const DEFAULT_RETRY_DELAY = 100;
 
     public function get(string $uri): Response
     {
-        if (!$uri) {
-            throw new FcaApiException("NO URI Detected");
+        if (! $uri) {
+            throw new FcaApiException('NO URI Detected');
         }
 
         $apiUrl = $this->getApiUrl($uri);
@@ -25,11 +29,11 @@ class FcaApiClient
         $response = Http::withHeaders([
             'X-Auth-Email' => $this->getConfig('fcaapi.email'),
             'X-Auth-Key' => $this->getConfig('fcaapi.key'),
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
         ])
-        ->timeout($this->getConfig('fcaapi.api_timeout', self::DEFAULT_TIMEOUT))
-        ->retry(self::DEFAULT_RETRY_ATTEMPTS, self::DEFAULT_RETRY_DELAY)
-        ->get($apiUrl);
+            ->timeout($this->getConfig('fcaapi.api_timeout', self::DEFAULT_TIMEOUT))
+            ->retry(self::DEFAULT_RETRY_ATTEMPTS, self::DEFAULT_RETRY_DELAY)
+            ->get($apiUrl);
 
         $this->handleApiResponse($response);
 
@@ -40,7 +44,8 @@ class FcaApiClient
     {
         $baseUrl = $this->getConfig('fcaapi.api_url', self::DEFAULT_API_URL);
         $version = $this->getConfig('fcaapi.api_version', self::DEFAULT_API_VERSION);
-        return $baseUrl . 'V' . $version . '/' . $uri;
+
+        return $baseUrl.'V'.$version.'/'.$uri;
     }
 
     private function getConfig(string $key, $default = null)
@@ -52,6 +57,7 @@ class FcaApiClient
         } catch (\Exception $e) {
             // Ignore config errors in unit tests
         }
+
         return $default;
     }
 

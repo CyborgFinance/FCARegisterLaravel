@@ -2,16 +2,16 @@
 
 namespace Cyborgfinance\Fcaregisterlaravel\Tests;
 
-use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Cyborgfinance\Fcaregisterlaravel\FcaregisterlaravelServiceProvider;
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
     public function createApplication()
     {
-        $app = require __DIR__ . '/../vendor/orchestra/testbench-core/laravel/bootstrap/app.php';
+        $app = require __DIR__.'/../vendor/orchestra/testbench-core/laravel/bootstrap/app.php';
         $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-        
+
         return $app;
     }
 
@@ -22,15 +22,13 @@ abstract class TestCase extends BaseTestCase
         ];
     }
 
-    
-
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Load the package config file directly
-        $configPath = __DIR__ . '/../config/fcaapi.php';
-        
+        $configPath = __DIR__.'/../config/fcaapi.php';
+
         if (file_exists($configPath)) {
             $packageConfig = require $configPath;
             config()->set('fcaapi', $packageConfig);
@@ -45,11 +43,11 @@ abstract class TestCase extends BaseTestCase
                 'run_live_tests' => false,
             ]);
         }
-        
+
         // Override with environment variables
         config()->set('fcaapi.email', env('FCA_EMAIL', config('fcaapi.email')));
         config()->set('fcaapi.key', env('FCA_KEY', config('fcaapi.key')));
-        
+
         // Set live tests toggle with proper boolean conversion
         $runLiveTests = env('RUN_LIVE_TESTS', config('fcaapi.run_live_tests'));
         if (is_string($runLiveTests)) {

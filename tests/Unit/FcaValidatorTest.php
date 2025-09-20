@@ -2,8 +2,8 @@
 
 namespace Cyborgfinance\Fcaregisterlaravel\Tests\Unit;
 
-use Cyborgfinance\Fcaregisterlaravel\FcaValidator;
 use Cyborgfinance\Fcaregisterlaravel\Exceptions\FcaValidationException;
+use Cyborgfinance\Fcaregisterlaravel\FcaValidator;
 use PHPUnit\Framework\TestCase;
 
 class FcaValidatorTest extends TestCase
@@ -22,7 +22,7 @@ class FcaValidatorTest extends TestCase
     {
         $this->expectException(FcaValidationException::class);
         $this->expectExceptionMessage('FCA FRN NUMBER MUST BE A POSITIVE INTEGER');
-        
+
         FcaValidator::validateFrnNumber(0);
     }
 
@@ -31,7 +31,7 @@ class FcaValidatorTest extends TestCase
     {
         $this->expectException(FcaValidationException::class);
         $this->expectExceptionMessage('FCA FRN NUMBER MUST BE A POSITIVE INTEGER');
-        
+
         FcaValidator::validateFrnNumber(-1);
     }
 
@@ -49,7 +49,7 @@ class FcaValidatorTest extends TestCase
     {
         $this->expectException(FcaValidationException::class);
         $this->expectExceptionMessage('NO FCA IRN NUMBER PROVIDED');
-        
+
         FcaValidator::validateIrnNumber('');
     }
 
@@ -58,7 +58,7 @@ class FcaValidatorTest extends TestCase
     {
         $this->expectException(FcaValidationException::class);
         $this->expectExceptionMessage('NO FCA IRN NUMBER PROVIDED');
-        
+
         FcaValidator::validateIrnNumber('   ');
     }
 
@@ -76,7 +76,7 @@ class FcaValidatorTest extends TestCase
     {
         $this->expectException(FcaValidationException::class);
         $this->expectExceptionMessage('NO FCA COUNTRY PROVIDED');
-        
+
         FcaValidator::validateCountry('');
     }
 
@@ -94,7 +94,7 @@ class FcaValidatorTest extends TestCase
     {
         $this->expectException(FcaValidationException::class);
         $this->expectExceptionMessage('NO SEARCH PARAMETER PROVIDED');
-        
+
         FcaValidator::validateSearch('');
     }
 
@@ -112,7 +112,7 @@ class FcaValidatorTest extends TestCase
     {
         $this->expectException(FcaValidationException::class);
         $this->expectExceptionMessage('NO REQUIREMENT REFERENCE PROVIDED');
-        
+
         FcaValidator::validateReqRef('');
     }
 
@@ -121,7 +121,7 @@ class FcaValidatorTest extends TestCase
     {
         $this->expectException(FcaValidationException::class);
         $this->expectExceptionMessage('NO REQUIREMENT REFERENCE PROVIDED');
-        
+
         FcaValidator::validateReqRef('   ');
     }
 
@@ -141,7 +141,7 @@ class FcaValidatorTest extends TestCase
     {
         $this->expectException(FcaValidationException::class);
         $this->expectExceptionMessage('INVALID SEARCH TYPE. MUST BE ONE OF: firm, individual, fund');
-        
+
         FcaValidator::validateSearchType('invalid_type');
     }
 }
