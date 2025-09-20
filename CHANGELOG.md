@@ -11,6 +11,9 @@ All notable changes to `FCARegisterLaravel` will be documented in this file.
 - `FcaValidator` class with validation methods for FCA FRN numbers
 - Comprehensive unit tests for new exception handling, error handling, API client, and validator functionality
 - Install Command `php artisan fcaapi:install`
+- FCA REST API documentation files for all endpoints and data structures
+- `validateReqRef` method in `FcaValidator` for requirement reference validation
+- `validateSearchType` method in `FcaValidator` for search type validation
 
 ### Changed
 - Simplified composer.json dependencies and configuration
@@ -22,11 +25,13 @@ All notable changes to `FCARegisterLaravel` will be documented in this file.
 - Improved error handling throughout the FCA API integration
 - Enhanced validation and error handling in core API methods
 - Updated README.md to clarify FCA API support and installation instructions
+- Updated `Fcaapi` to utilize new validation methods in `requirementsInvestmentTypes` and `search` methods
 
 ### Improved
 - Better separation of concerns with dedicated classes for specific responsibilities
 - More robust error handling and validation
 - Enhanced test coverage for new functionality
+- Added comprehensive tests for new validation methods in `FcaValidatorTest` and `FcaapiTest`
 
 ## 1.0.3 - 2025-09-20
 
